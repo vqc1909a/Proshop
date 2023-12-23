@@ -5,7 +5,7 @@
   "main": "server.js",
   "type": "module",
   "scripts": {
-    "server": "cross-env NODE_ENV=development nodemon backend/server.js",
+    "server": "cross-env NODE_ENV=development nodemon --inspect=0.0.0.0:9229 -L backend/server.js",
     "start": "cross-env NODE_ENV=production node backend/server.js",
     
     "client": "npm start --prefix frontend",
