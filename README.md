@@ -10,3 +10,30 @@
 
 * El --prefix es para primero ir a esa carpeta y luego ejcutar el comando que le antecede => Ej: **npm start --prefix frontend**
 * En la últimas versiones de node de 15 para arriba puedes poner en el package json de node lo siguiente: "type": "module" => debajo de main, y podrás manejar todas las importaciones como si fuera react
+
+
+## Get up project in mode development
+After to configure the file compose.yaml in the principal directory, and have added the files Dockerfile and .dockerignore in the subdirectories as frontend and backend, to execute the following command.
+
+In this case the files Dockerfile and .dockerignore of the project backend are in the principal directory because here is the package.json and into this are the scripts for execute the backend project, only for this case, since for majority projects MERN are made how i have said to first   
+```bash
+    docker compose up --build -d
+```
+***NOTE: In the some projects MERN let's going to work with proxy in the file package.json in the project frontend for connect to backend, then let's when get up these projects with docker, instead of put the value 'http://backend:5000' in the property proxy, let's put the value 'http://<service-got-up>:<port>', only if let's going to work of this way***
+
+### 1.- To access to the consoles live of the services got up
+For this simply to execute the following command, replacing the name of the service with the service name into the file compose.yaml
+```bash
+    docker compose logs -f frontend
+    docker compose logs -f backend
+```
+### 2.- To work into the consoles of the services got up
+Something work that might let's work in the services got up, let's will make in their consoles live, for that let's access into their projects live with the following command and execute a command for example 'npm install <some-package>':
+```bash
+    docker compose exec frontend sh
+    'then'
+    npm install <some-package>
+```
+        
+
+## Get up in mode production

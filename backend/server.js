@@ -41,8 +41,8 @@ app.use("/api/users", usersRoutes);
 
 //Ahoras si es que sabes bien que el build al igual que el developmentb de una aplicación de react es simplemente un html donde necesita javascript para ejecutar todo lo que hicimos en el front, o sea pintar las rutas en el navegador, responder el contenido según la ruta, etc y para deployarlo simplemente necesitamos de un servidor corriendo para mandar a llmar a ese html, lo hacemos desde este servidor del backend xq el proxy ya no me funcionara cuando hacemos le build de mi app de react porque es un simple html con el javascript ya compilado de todo lo que hicimos pero no me funcionara el proxy porque solamente me funcionara en modo desarrollo gracias al package.json
 
-if(process.env.NODE_ENV){
-    //Para cualquier ruta desconocida tenemos que servir el index.html del build del frontend, esto xq vamos a tener rutas fictias del front y para que nos funcione como en el developmente cuando recargamso dichas paginas con las rutas fictias, entonces aqui debemos de poner cualquier ruta que no se encuentra definido en nuestro back, xq nuestro back todas sus retuas empiezan con /api, etonces funcionara normalin con las rutas del front, solamente que no deben coincidir las rutas del front con el del back
+if(process.env.NODE_ENV === 'production'){
+    //Para cualquier ruta desconocida tenemos que servir el index.html del build del frontend, esto xq vamos a tener rutas fictias del front y para que nos funcione como en el development cuando recargamos dichas paginas con las rutas fictias, entonces aqui debemos de poner cualquier ruta que no se encuentra definido en nuestro back, xq nuestro back todas sus retuas empiezan con /api, etonces funcionara normalin con las rutas del front, solamente que no deben coincidir las rutas del front con el del back
 
     //En un principio no te va a dar xq solamente estas accediendo al html pero no tienes acceso a los recursos de toda la carpeta build xq solamente estas sirviendo el index.html del front nada mas, y no todos los demás recurosso, para ello podemos hacerlo publico desde este servidor de node todo lo que esta dentro del build del front
     app.use(express.static(path.join(__dirname, '../frontend/build')));
@@ -51,11 +51,9 @@ if(process.env.NODE_ENV){
         return res.sendFile(path.join(__dirname, '../frontend/build/index.html'));
     })
 
-    //Si vas ha servir tu aplicación mern con servidor de express, entonces lo haces de esta misma forma de arriba, todo el build publico y cualquier ruta carga el index.html 
-
-    //La otra forma sería servir aparte el front en un puerto y el back aparte en otro puerto
+    
 }else{
-    app.get("/*", (req, res) => {
+    app.get("/", (req, res) => {
         return res.send("API is running");
     })
 }

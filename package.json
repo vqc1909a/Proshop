@@ -7,10 +7,8 @@
   "scripts": {
     "server": "cross-env NODE_ENV=development nodemon --inspect=0.0.0.0:9229 -L backend/server.js",
     "start": "cross-env NODE_ENV=production node backend/server.js",
-    
     "client": "npm start --prefix frontend",
     "desarrollo": "concurrently \"npm run server\" \"npm run client\"",
-    "produccion": "npm run start",
     "data:import": "cross-env NODE_ENV=development node backend/seeder.js",
     "data:destroy": "cross-env NODE_ENV=development node backend/seeder.js -d",
     "data:import:prod": "cross-env NODE_ENV=production node backend/seeder.js",
