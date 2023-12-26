@@ -24,16 +24,27 @@ In this case the files Dockerfile and .dockerignore of the project backend are i
 ### 1.- To access to the consoles live of the services got up
 For this simply to execute the following command, replacing the name of the service with the service name into the file compose.yaml
 ```bash
-    docker compose logs -f frontend
-    docker compose logs -f backend
+    docker compose logs -f frontend_dev
+    docker compose logs -f backend_dev
 ```
 ### 2.- To work into the consoles of the services got up
 Something work that might let's work in the services got up, let's will make in their consoles live, for that let's access into their projects live with the following command and execute a command for example 'npm install <some-package>':
 ```bash
-    docker compose exec frontend sh
+    docker compose exec frontend_dev sh
     'then'
     npm install <some-package>
 ```
         
 
 ## Get up in mode production
+In mode production, simply let's point to compose.prod.yaml instead compose.yaml in the execution command
+```bash
+    docker compose -f compose.prod.yaml up --build -d
+```
+### Get off the build compose
+    For get off the build compose in mode production, execute the following command
+```bash
+    docker compose -f compose.prod.yaml down
+```
+
+***NOTE: When let's copy the files host to container, Docker will ignores the files or folders especified in the .dockerignore but also ignore the especified in the .gitignore. So when It will ignore the specified in the .gitignore, let's will have to include these files in the .dockerignore  *** 

@@ -29,3 +29,5 @@ yarn-error.log*
 
 # docker
 compose.yaml
+compose.prod.yaml
+

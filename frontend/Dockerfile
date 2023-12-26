@@ -9,7 +9,6 @@ EXPOSE 3000
 FROM base as frontend_dev
 ENV NODE_ENV development
 COPY ./package*.json ./
-RUN npm ci --include=dev
+RUN npm install
 COPY ./ ./
 CMD npm start
-

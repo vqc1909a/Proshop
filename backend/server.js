@@ -47,11 +47,10 @@ if(process.env.NODE_ENV === 'production'){
     //En un principio no te va a dar xq solamente estas accediendo al html pero no tienes acceso a los recursos de toda la carpeta build xq solamente estas sirviendo el index.html del front nada mas, y no todos los demás recurosso, para ello podemos hacerlo publico desde este servidor de node todo lo que esta dentro del build del front
     app.use(express.static(path.join(__dirname, '../frontend/build')));
 
-    app.get("/*", function(req, res){
+    app.get("/", function(req, res){
         return res.sendFile(path.join(__dirname, '../frontend/build/index.html'));
     })
 
-    
 }else{
     app.get("/", (req, res) => {
         return res.send("API is running");
