@@ -1,4 +1,4 @@
-import serverService from "../axios";
+import serverService from "../axiosConfig";
 
 export const getLoggedUser = async (token) => {
     let url = "/api/profile";

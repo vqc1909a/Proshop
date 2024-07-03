@@ -8,20 +8,19 @@ import Message from "components/Message";
 import * as CART_SELECTORS from "redux/selectors/cartSelector";
 
 //Actions
-import * as AUTH_ACTIONS from "redux/slices/authSlice"
-import * as CART_ACTIONS from "redux/slices/cartSlice"
-import * as ERROR_ACTIONS from "redux/slices/errorSlice"
+import * as AUTH_ACTIONS from "redux/slices/authSlice";
+import * as CART_ACTIONS from "redux/slices/cartSlice";
+import * as ERROR_ACTIONS from "redux/slices/errorSlice";
 
 //Services
-import { useSaveOrderMutation } from "redux/slices/orderApiSlice";
-
+import {useSaveOrderMutation} from "apis/orderApi";
 
 function PlaceOrder() {
-    const navigate = useNavigate();
+	const navigate = useNavigate();
 	const dispatch = useDispatch();
-    const {setNumberStep} = useOutletContext();
+	const {setNumberStep} = useOutletContext();
 
-	const [ saveOrder, { isError, isLoading, error } ] = useSaveOrderMutation();
+	const [saveOrder, {isError, isLoading, error}] = useSaveOrderMutation();
 
 	const items = useSelector(CART_SELECTORS.selectItems);
 	const itemsPrice = useSelector(CART_SELECTORS.selectItemsPrice);
@@ -32,40 +31,44 @@ function PlaceOrder() {
 	const taxPrice = useSelector(CART_SELECTORS.selectTaxPrice);
 	const totalPrice = useSelector(CART_SELECTORS.selectTotalPrice);
 
-	const handlePlaceOrder = async(e) => {
-        e.preventDefault();
-		try{
+	const handlePlaceOrder = async (e) => {
+		e.preventDefault();
+		try {
 			const token = JSON.parse(localStorage.getItem("token"));
 			const order = {
-				items, 
-				itemsPrice, 
+				items,
+				itemsPrice,
 				paymentMethod,
-				qtyItems, 
+				qtyItems,
 				shippingAddress,
-				taxPrice, 
-				totalPrice 
+				taxPrice,
+				totalPrice,
 			};
 			const createdOrder = await saveOrder({token, order}).unwrap();
-			navigate(`/orders/${createdOrder?.body?.id }`)
+			navigate(`/orders/${createdOrder?.body?.id}`);
 			dispatch(CART_ACTIONS.clearCart());
-		}catch(err){
-			if(err.status === 401 || err.status === 403){
-				dispatch(ERROR_ACTIONS.saveMessage(err?.data?.message || err?.error || err.message))
+		} catch (err) {
+			if (err.status === 401 || err.status === 403) {
+				dispatch(
+					ERROR_ACTIONS.saveMessage(
+						err?.data?.message || err?.error || err.message
+					)
+				);
 				dispatch(AUTH_ACTIONS.logout());
 			}
 		}
-    };
+	};
 
 	useEffect(() => {
 		setNumberStep(3);
 		//eslint-disable-next-line
 	}, []);
 
-	if(!Object.keys(shippingAddress).length){
-		return <Navigate to="shipping-address" replace={true} />
+	if (!Object.keys(shippingAddress).length) {
+		return <Navigate to="shipping-address" replace={true} />;
 	}
-	if(!paymentMethod){
-		return <Navigate to="payment" replace={true} />
+	if (!paymentMethod) {
+		return <Navigate to="payment" replace={true} />;
 	}
 	return (
 		<Row>
@@ -75,13 +78,15 @@ function PlaceOrder() {
 						<h2>Shipping</h2>
 						<p>
 							<strong>Address: </strong>
-							{shippingAddress.address}, {shippingAddress.city}{" "}{shippingAddress.postalCode},{" "}{shippingAddress.country}
+							{shippingAddress.address}, {shippingAddress.city}{" "}
+							{shippingAddress.postalCode}, {shippingAddress.country}
 						</p>
 					</ListGroup.Item>
 
 					<ListGroup.Item>
 						<h2>Payment Method</h2>
-						<strong>Method: </strong>{paymentMethod}
+						<strong>Method: </strong>
+						{paymentMethod}
 					</ListGroup.Item>
 
 					<ListGroup.Item>
@@ -91,20 +96,14 @@ function PlaceOrder() {
 								<ListGroup.Item key={item.id}>
 									<Row>
 										<Col md={2}>
-											<Image
-												src={item.image}
-												alt={item.name}
-												fluid
-												rounded
-											/>
+											<Image src={item.image} alt={item.name} fluid rounded />
 										</Col>
 										<Col>
-											<Link to={`/products/${item.slug}`}>
-												{item.name}
-											</Link>
+											<Link to={`/products/${item.slug}`}>{item.name}</Link>
 										</Col>
 										<Col md={5}>
-											{item.qty} x ${item.priceIVA} = ${parseFloat(item.qty * item.priceIVA).toFixed(2)}
+											{item.qty} x ${item.priceIVA} = $
+											{parseFloat(item.qty * item.priceIVA).toFixed(2)}
 										</Col>
 									</Row>
 								</ListGroup.Item>
@@ -131,7 +130,7 @@ function PlaceOrder() {
 								<Col>${taxPrice.toFixed(2)}</Col>
 							</Row>
 						</ListGroup.Item>
-                        <ListGroup.Item>
+						<ListGroup.Item>
 							<Row>
 								<Col>Shipping Price</Col>
 								<Col>${shippingPrice.toFixed(2)}</Col>
@@ -143,15 +142,19 @@ function PlaceOrder() {
 								<Col>${totalPrice.toFixed(2)}</Col>
 							</Row>
 						</ListGroup.Item>
-                        <ListGroup.Item>
-                                {isError && <Message variant="danger">{error?.data?.message || error?.error}</Message>}
-                        </ListGroup.Item>
+						<ListGroup.Item>
+							{isError && (
+								<Message variant="danger">
+									{error?.data?.message || error?.error}
+								</Message>
+							)}
+						</ListGroup.Item>
 						<ListGroup.Item>
 							<Button
 								type="button"
 								className="btn btn-block"
 								onClick={handlePlaceOrder}
-                                disabled={isLoading ? true : false}
+								disabled={isLoading ? true : false}
 							>
 								Place Order
 							</Button>

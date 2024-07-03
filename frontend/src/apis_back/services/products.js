@@ -1,4 +1,4 @@
-import serverService from "../axios";
+import serverService from "../axiosConfig";
 
 export const getProducts = async () => {
     let url = "/api/products";

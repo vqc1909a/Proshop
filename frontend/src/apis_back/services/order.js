@@ -1,4 +1,4 @@
-import serverService from "../axios";
+import serverService from "../axiosConfig";
 
 export const saveOrder = async ({order, token}) => {
     let url = "/api/orders";

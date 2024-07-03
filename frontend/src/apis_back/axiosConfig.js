@@ -25,7 +25,6 @@ const serverService = {
             headers: Object.fromEntries(header),
             params
         };
-        console.log(requestOptions);
         return axios(requestOptions);
     },
 

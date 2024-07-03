@@ -1,4 +1,4 @@
-import serverService from "../axios";
+import serverService from "../axiosConfig";
 
 export const loginUser = async (user) => {
     let url = "/api/auth/login";
