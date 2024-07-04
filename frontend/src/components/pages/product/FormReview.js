@@ -19,7 +19,7 @@ const REVIEW_DEFAULT = {
 	comment: "",
 };
 
-const FormReview = ({selectedProduct, refetchProduct}) => {
+const FormReview = ({productId, refetchProduct}) => {
 	const location = useLocation();
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
@@ -67,10 +67,10 @@ const FormReview = ({selectedProduct, refetchProduct}) => {
 			await reviewSchema.validate(review, {abortEarly: false});
 			const newReview = {
 				...review,
-				productId: selectedProduct.id,
+				productId,
 				userId: userInfo.id,
 			};
-			await createReview({token, productId: selectedProduct.id, newReview});
+			await createReview({token, productId, newReview});
 			setForm(REVIEW_DEFAULT);
 			setErrors({});
 			refetchProduct();

@@ -23,7 +23,7 @@ function ProductScreen() {
 		useGetProductBySlugQuery(slug);
 	let selectedProduct = data?.body || {};
 
-	const {image, name, rating, numReviews, priceIVA, description, countInStock} =
+	const {id: productId, image, name, priceIVA, description, countInStock} =
 		selectedProduct;
 
 	const handleAddToCart = (product, qty) => {
@@ -33,8 +33,6 @@ function ProductScreen() {
 			description,
 			createdAt,
 			updatedAt,
-			rating,
-			numReviews,
 			...restProduct
 		} = product;
 		let newProduct = {
@@ -76,7 +74,7 @@ function ProductScreen() {
 									<h3>{name}</h3>
 								</ListGroup.Item>
 								<ListGroup.Item>
-									<Rating rating={rating} numReviews={`${numReviews}`}></Rating>
+									<Rating productId={productId}></Rating>
 								</ListGroup.Item>
 								<ListGroup.Item>Price: ${priceIVA}</ListGroup.Item>
 								<ListGroup.Item>Description: {description}</ListGroup.Item>
@@ -140,7 +138,7 @@ function ProductScreen() {
 						</Col>
 					</Row>
 					<Reviews
-						selectedProduct={selectedProduct}
+						productId={productId}
 						refetchProduct={refetch}
 					></Reviews>
 				</>

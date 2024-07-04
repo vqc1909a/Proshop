@@ -5,14 +5,14 @@ import Message from "components/Message";
 import Rating from "components/Rating";
 import FormReview from "./FormReview";
 
-const Reviews = ({selectedProduct, refetchProduct}) => {
+const Reviews = ({productId, refetchProduct}) => {
 	const {
 		data: dataReviews,
 		isError: isErrorReviews,
 		isLoading: isLoadingReviews,
 		error: errorReviews,
-	} = useGetReviewsQuery({productId: selectedProduct.id});
-	const reviews = dataReviews?.body || [];
+	} = useGetReviewsQuery({productId});
+	const reviews = dataReviews?.body?.reviews || [];
 
 	return (
 		<Row className="review">
@@ -42,7 +42,7 @@ const Reviews = ({selectedProduct, refetchProduct}) => {
 					</ListGroup>
 				)}
 				<FormReview
-					selectedProduct={selectedProduct}
+					productId={productId}
 					refetchProduct={refetchProduct}
 				></FormReview>
 			</Col>

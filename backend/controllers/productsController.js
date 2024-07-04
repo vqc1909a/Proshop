@@ -349,7 +349,13 @@ export const deleteProduct = asyncHandler(async(req, res, next) => {
 export const getReviews = asyncHandler( async(req, res) => {
     const productId = req.params.id;
     const reviews = await Review.find({productId}).populate("userId productId");
-    return res.status(200).json({body: reviews})
+    const countReviews = reviews.length;
+    const rating = countReviews > 0 ? parseFloat(reviews.reduce((acc, review) => acc + review.rating, 0) / countReviews).toFixed(2) : 0;
+    return res.status(200).json({body: {
+        reviews,
+        countReviews,
+        rating
+    }})
 })
 
 
