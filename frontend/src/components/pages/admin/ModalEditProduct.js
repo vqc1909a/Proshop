@@ -54,7 +54,7 @@ function ModalEditProduct(props) {
 		isError: isErrorProduct,
 		isLoading: isLoadingProduct,
 		error: errorProduct,
-	} = useGetProductByIdQuery({token, idProduct: idProductSelected});
+	} = useGetProductByIdQuery({token, productId: idProductSelected});
 	const product = dataProduct?.body || {};
 
 	//Solo para peticiones get que necesiten de un token para autenticación
@@ -107,7 +107,7 @@ function ModalEditProduct(props) {
 							try {
 								await editProduct({
 									token,
-									idProduct: values.id,
+									productId: values.id,
 									newProduct: values,
 								}).unwrap();
 							} catch (err) {

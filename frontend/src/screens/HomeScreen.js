@@ -11,6 +11,9 @@ import Meta from "components/Meta";
 
 function HomeScreen() {
 	const location = useLocation();
+	console.log({
+		location
+	})
 	const useQuery = () => new URLSearchParams(location.search);
 
 	let query = useQuery();
@@ -37,36 +40,37 @@ function HomeScreen() {
 			<Meta></Meta>
 			<ProductCarousel />
 			<h1>Latest Products</h1>
-			<Row>
-				{isLoading ? (
-					/* <Loader /> */
-					[...Array(8).keys()].map((key) => (
+
+			{isLoading ? (
+				/* <Loader /> */
+				<Row>
+					{[...Array(4).keys()].map((key) => (
 						<Col sm={12} md={6} lg={4} xl={3} key={key}>
 							<ProductLoader className="my-3" />
 						</Col>
-					))
-				) : isError ? (
-					<Message variant="danger">
-						{error?.data?.message || error?.error}
-					</Message>
-				) : products.length ? (
-					<>
+					))}
+				</Row>
+			) : isError ? (
+				<Message variant="danger">
+					{error?.data?.message || error?.error}
+				</Message>
+			) : products.length ? (
+				<>
+					<Row>
 						{products.map((product) => (
 							<Col sm={12} md={6} lg={4} xl={3} key={product.id}>
 								<Product product={product}></Product>
 							</Col>
 						))}
-					</>
-				) : (
-					<h3>Sin Productos</h3>
-				)}
-			</Row>
-			{products.length > 0 && (
-				<Paginate
-					pathname="/"
-					totalPages={totalPages}
-					page={pageNow}
-				></Paginate>
+					</Row>
+					<Paginate
+						pathname="/"
+						totalPages={totalPages}
+						page={pageNow}
+					></Paginate>
+				</>
+			) : (
+				<h3>Sin Productos</h3>
 			)}
 		</>
 	);

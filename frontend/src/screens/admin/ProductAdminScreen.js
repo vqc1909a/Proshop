@@ -17,7 +17,7 @@ import {
 import {Link, useLocation} from "react-router-dom";
 import {
 	useDeleteProductMutation,
-	useGetMyProductsQuery,
+	useGetProductsAdminQuery,
 } from "apis/productsApi";
 import {useDispatch, useSelector} from "react-redux";
 import {nanoid} from "nanoid";
@@ -41,9 +41,8 @@ function ProductAdminScreen() {
 	const token = localStorage.getItem("token")
 		? JSON.parse(localStorage.getItem("token"))
 		: "";
-	const {isError, isLoading, data, error /* refetch */} = useGetMyProductsQuery(
-		{token, page}
-	);
+	const {isError, isLoading, data, error /* refetch */} =
+		useGetProductsAdminQuery({token, page});
 	let products = data?.body?.products || [];
 	let totalPages = data?.body?.totalPages || 0;
 	let pageNow = data?.body?.page || 1;

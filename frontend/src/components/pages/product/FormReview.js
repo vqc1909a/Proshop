@@ -70,7 +70,7 @@ const FormReview = ({selectedProduct, refetchProduct}) => {
 				productId: selectedProduct.id,
 				userId: userInfo.id,
 			};
-			await createReview({token, idProduct: selectedProduct.id, newReview});
+			await createReview({token, productId: selectedProduct.id, newReview});
 			setForm(REVIEW_DEFAULT);
 			setErrors({});
 			refetchProduct();

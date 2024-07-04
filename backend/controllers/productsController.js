@@ -44,7 +44,7 @@ export const subirImagen = (fieldName) => {
 export const getProducts = asyncHandler(async (req, res) => {
     let totalProducts = await Product.countDocuments();
     let page = Number(req.query.page) || 1;
-    let productsByPage = 8;
+    let productsByPage = 4;
     let totalPages = Math.ceil(totalProducts/productsByPage);
 
     //Funciona concreatedAt peor no con updatedAt
@@ -140,7 +140,7 @@ export const getProductBySlug = asyncHandler(async(req, res) => {
 // @desc Fetch Admin Products
 // @route GET /api/products/admin
 // @access Private/Admin
-export const getMyProducts = asyncHandler(async (req, res) => {
+export const getProductsAdmin = asyncHandler(async (req, res) => {
     let user = req.user;
 
     let page = Number(req.query.page) || 1;
@@ -149,15 +149,11 @@ export const getMyProducts = asyncHandler(async (req, res) => {
     let productsByPage = 5;
     let totalPages = 0;
 
-    //Cuando soy superadministrador necesito datos de los creadores del producto
+    //Cuando soy superadministrador necesito datos de los creadores del producto para mapearlos en el dashboard (owner)
     if(user.isSuperAdmin){
-        products = await Product.find({}).populate("userId");
+        products = await Product.find({});
         totalProducts = products.length;
         totalPages = Math.ceil(totalProducts/productsByPage);
-        console.log({
-            productsByPage,
-            page
-        })
         products = await Product.find({}).sort({ createdAt: -1 }).populate("userId").skip(productsByPage * (page - 1)).limit(productsByPage);
     }else{
         products = await Product.find({userId: user._id});
@@ -266,7 +262,7 @@ export const editImageProduct = async(req, res, next) => {
 
         let previousImage = searchedProduct.image;
 
-        //Si me cambio la ruta de la imagen correctamente, entonces eliminamos la imagen anterior
+        //Si me actualizo la ruta de la imagen correctamente, entonces eliminamos la imagen anterior
         const updatedProduct = await Product.findOneAndUpdate({_id: idProduct}, body, {runValidators: true, new: true});
 
         const filePathImage = path.join(__dirname, `../public/${previousImage}`);
@@ -310,7 +306,6 @@ export const deleteProduct = asyncHandler(async(req, res, next) => {
         }
     }
 
-    
     //Verificar que no tengamos algun orden vinculado al producto
     const orders = await Order.find({});
     let existsProductInSomeOrder = false;
@@ -324,8 +319,7 @@ export const deleteProduct = asyncHandler(async(req, res, next) => {
         res.status(400);
         throw new Error("El producto tiene ordenes vinculados")
     }
-    
-    
+
     let previousImage = searchedProduct.image;
     //Me devuelve el objeto eliminado
     const deleteProductPromise = Product.findOneAndDelete({_id: idProduct});
@@ -373,6 +367,7 @@ export const createReview = asyncHandler( async(req, res) => {
         throw new Error("Producto no encontrado")
     }
 
+    //Solo puedes hacer critica del producto una sola vez
     const reviews = await Review.find({productId});
     const alreadyReviewed = reviews.find(review => review.userId.toString() === user._id.toString());
     if(alreadyReviewed){

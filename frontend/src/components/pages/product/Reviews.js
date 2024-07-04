@@ -11,7 +11,7 @@ const Reviews = ({selectedProduct, refetchProduct}) => {
 		isError: isErrorReviews,
 		isLoading: isLoadingReviews,
 		error: errorReviews,
-	} = useGetReviewsQuery({idProduct: selectedProduct.id});
+	} = useGetReviewsQuery({productId: selectedProduct.id});
 	const reviews = dataReviews?.body || [];
 
 	return (

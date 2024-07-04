@@ -8,7 +8,11 @@ Router.route("/top").get(PRODUCTS_CONTROLLER.getTopProducts);
 
 Router.route("/search/:keyword").get(PRODUCTS_CONTROLLER.getProductsBySearch);
 
-Router.route("/admin").get(MIDDLEWARES.verifyAuthentication, MIDDLEWARES.adminMiddleware, PRODUCTS_CONTROLLER.getMyProducts);
+Router.route("/admin").get(
+	MIDDLEWARES.verifyAuthentication,
+	MIDDLEWARES.adminMiddleware,
+	PRODUCTS_CONTROLLER.getProductsAdmin
+);
 Router.route("/admin").post(MIDDLEWARES.verifyAuthentication, MIDDLEWARES.adminMiddleware, PRODUCTS_CONTROLLER.subirImagen('image'), PRODUCTS_CONTROLLER.createProduct);
 Router.route("/admin/:id").get(MIDDLEWARES.verifyAuthentication, MIDDLEWARES.adminMiddleware,PRODUCTS_CONTROLLER.getProductById);
 Router.route("/admin/:id").put(MIDDLEWARES.verifyAuthentication, MIDDLEWARES.adminMiddleware, PRODUCTS_CONTROLLER.editProduct);

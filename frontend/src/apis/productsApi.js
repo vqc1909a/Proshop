@@ -20,7 +20,7 @@ const productsApiSlice = apiSlice.injectEndpoints({
 			//No cuenta recargas de pagina, tampoco cuenta para mutations, solo cuenta para querys que puedes cancelar los tipados desde otras mutaciones o querys. Tienes sentido todo eso, las mutaciones siempre haran request del servidor pero ahi tu puedes decir a que query con tal tag va tener que obtener sus valores desde cero del servidor y ya no almacenarlo en cache
 
 			// En RTK Query, si no especificas el valor de keepUnusedDataFor en una consulta, el valor por defecto es 60 segundos. Esto significa que los datos en caché que no han sido utilizados durante al menos 60 segundos serán automáticamente eliminados de la caché.
-			keepUnusedDataFor: 5,
+			keepUnusedDataFor: 60,
 			//providesTags:
 			// Purpose: It is used to label data returned by a query or mutation with one or more tags. These tags are then used to track and select which cached data may be affected by other operations.
 
@@ -29,30 +29,31 @@ const productsApiSlice = apiSlice.injectEndpoints({
 			// Effect: If a mutation invalidates a tag that matches a tag provided by a query, the cached data for that query will be considered stale and refetched on the next component re-render that uses that query.
 			providesTags: ["Products"],
 		}),
-		getProductBySlug: builder.query({
-			query: (slug) => ({
-				url: `${PRODUCTS_URL}/${slug}`,
-			}),
-			keepUnusedDataFor: 5,
-			//Aqui definimos el tag con el type Product pero con el slug del producto, y si en alugna mutacion quieres cancelar el tag, el objeto dentro de invalidatesTags tiene que ser este mismo objeto { type: 'Post', slug }
-			providesTags: (result, error, slug) => [{type: "Product", slug}],
-		}),
 		getProductBySearch: builder.query({
 			query: ({keyword, page}) => ({
 				url: `${PRODUCTS_URL}/search/${keyword}?page=${page}`,
 			}),
-			keepUnusedDataFor: 5,
-			//Aqui definimos el tag con el type Product pero con el slug del producto, y si en alugna mutacion quieres cancelar el tag, el objeto dentro de invalidatesTags tiene que ser este mismo objeto { type: 'Post', slug }
+			keepUnusedDataFor: 60,
+			//Aqui definimos el tag Products, y para cualquier busqueda va a cachear la respuesta de este endpoint a diferencia de lo de arriba que cachea solamente el endpoint para el producto especifico con su slug
 			providesTags: ["Products"],
 		}),
 		getTopProducts: builder.query({
 			query: () => ({
 				url: `${PRODUCTS_URL}/top`,
 			}),
-			keepUnusedDataFor: 5,
+			keepUnusedDataFor: 60,
 			providesTags: ["Products"],
 		}),
-		getMyProducts: builder.query({
+		getProductBySlug: builder.query({
+			query: (slug) => ({
+				url: `${PRODUCTS_URL}/${slug}`,
+			}),
+			keepUnusedDataFor: 60,
+			//Aqui definimos el tag con el type Product pero con el slug del producto, y si en alugna mutacion quieres cancelar el tag, el objeto dentro de invalidatesTags tiene que ser este mismo objeto { type: 'Post', slug }
+			providesTags: (result, error, slug) => [{type: "Product", slug}],
+		}),
+		// ADMIN
+		getProductsAdmin: builder.query({
 			query: ({token, page}) => {
 				return {
 					url: `${PRODUCTS_URL}/admin?page=${page}`,
@@ -61,30 +62,24 @@ const productsApiSlice = apiSlice.injectEndpoints({
 					},
 				};
 			},
-			// Este es el tiempo durante el cual RTK Query mantendrá sus datos en caché después de que el último componente se dé de baja. Por ejemplo, si consulta un punto final, luego desmonta el componente y luego monta otro componente que realiza la misma solicitud dentro del marco de tiempo dado, el valor más reciente se entregará desde la memoria caché.
-
-			//No cuenta recargas de pagina, tampoco cuenta para mutations, solo cuenta para querys pero puede cancelar los tipados desde las mutaciones o querys. Tienes sentido todo eso, las mutaciones siempre haran request del servidor pero ahi tu puedes decir a que query con tal tag va tener que obtener sus valores desde cero del servidor y ya no almacenarlo en cache
-
-			// En RTK Query, si no especificas el valor de keepUnusedDataFor en una consulta, el valor por defecto es 60 segundos. Esto significa que los datos en caché que no han sido utilizados durante al menos 60 segundos serán automáticamente eliminados de la caché.
-			keepUnusedDataFor: 5,
+			keepUnusedDataFor: 60,
 			providesTags: ["ProductsAdmin"],
 		}),
 		getProductById: builder.query({
-			query: ({token, idProduct}) => {
+			query: ({token, productId}) => {
 				return {
-					url: `${PRODUCTS_URL}/admin/${idProduct}`,
+					url: `${PRODUCTS_URL}/admin/${productId}`,
 					headers: {
 						Authorization: `Bearer ${token}`,
 					},
 				};
 			},
-			keepUnusedDataFor: 5,
+			keepUnusedDataFor: 60,
 			//Aqui definimos el tag con el type Product pero con el slug del producto, y si en alugna mutacion quieres cancelar el tag, el objeto dentro de invalidatesTags tiene que ser este mismo objeto { type: 'Post', slug }, el tag de abajo implicitamente tiene 2 tags que sería ["Product"] y a la vez [{ type: 'Product', id }]
-			providesTags: (result, error, {idProduct}) => [
-				{type: "ProductAdmin", id: idProduct},
+			providesTags: (result, error, {productId}) => [
+				{type: "ProductAdmin", id: productId},
 			],
 		}),
-
 		createProduct: builder.mutation({
 			query: ({token, newProduct}) => {
 				return {
@@ -93,7 +88,7 @@ const productsApiSlice = apiSlice.injectEndpoints({
 					body: newProduct,
 					headers: {
 						Authorization: `Bearer ${token}`,
-						//No es necesario poner esto, basta que mandes un formData de tu formulario, este header se creara automaticamente
+						//No es necesario poner esto, basta que mandes un formData de tu formulario, este header se creara automaticamente para formData por la imagen
 						// 'Content-Type': `multipart/form-data`,
 					},
 				};
@@ -105,44 +100,46 @@ const productsApiSlice = apiSlice.injectEndpoints({
 			invalidatesTags: ["Products", "ProductsAdmin"],
 		}),
 		editProduct: builder.mutation({
-			query: ({token, idProduct, newProduct}) => {
+			query: ({token, productId, newProduct}) => {
 				return {
-					url: `${PRODUCTS_URL}/admin/${idProduct}`,
+					url: `${PRODUCTS_URL}/admin/${productId}`,
 					method: "PUT",
 					body: newProduct,
 					headers: {
-						"Content-Type": "application/json",
 						Authorization: `Bearer ${token}`,
+						"Content-Type": "application/json",
 					},
 				};
 			},
-			invalidatesTags: (result, error, {idProduct}) => [
+			invalidatesTags: (result, error, {productId}) => [
 				"Products",
 				"ProductsAdmin",
-				{type: "ProductAdmin", id: idProduct},
+				{type: "ProductAdmin", id: productId},
 			],
 		}),
 		editImageProduct: builder.mutation({
-			query: ({token, idProduct, newProduct}) => {
+			query: ({token, productId, newProduct}) => {
 				return {
-					url: `${PRODUCTS_URL}/admin/${idProduct}/change-image`,
+					url: `${PRODUCTS_URL}/admin/${productId}/change-image`,
 					method: "PUT",
 					body: newProduct,
 					headers: {
 						Authorization: `Bearer ${token}`,
+						//No es necesario poner esto, basta que mandes un formData de tu formulario, este header se creara automaticamente para formData por la imagen
+						// 'Content-Type': `multipart/form-data`,
 					},
 				};
 			},
-			invalidatesTags: (result, error, {idProduct}) => [
+			invalidatesTags: (result, error, {productId}) => [
 				"Products",
 				"ProductsAdmin",
-				{type: "ProductAdmin", id: idProduct},
+				{type: "ProductAdmin", id: productId},
 			],
 		}),
 		deleteProduct: builder.mutation({
-			query: ({token, idProduct}) => {
+			query: ({token, productId}) => {
 				return {
-					url: `${PRODUCTS_URL}/admin/${idProduct}`,
+					url: `${PRODUCTS_URL}/admin/${productId}`,
 					method: "DELETE",
 					headers: {
 						Authorization: `Bearer ${token}`,
@@ -152,21 +149,21 @@ const productsApiSlice = apiSlice.injectEndpoints({
 			invalidatesTags: (result, error) => ["Products", "ProductsAdmin"],
 		}),
 		getReviews: builder.query({
-			query: ({idProduct}) => {
+			query: ({productId}) => {
 				return {
-					url: `${PRODUCTS_URL}/${idProduct}/reviews`,
+					url: `${PRODUCTS_URL}/${productId}/reviews`,
 				};
 			},
-			keepUnusedDataFor: 5,
+			keepUnusedDataFor: 60,
 			//Aqui definimos el tag con el type Product pero con el slug del producto, y si en alugna mutacion quieres cancelar el tag, el objeto dentro de invalidatesTags tiene que ser este mismo objeto { type: 'Post', slug }, el tag de abajo implicitamente tiene 2 tags que sería ["Product"] y a la vez [{ type: 'Product', id }]
-			providesTags: (result, error, {idProduct}) => [
-				{type: "Reviews", id: idProduct},
+			providesTags: (result, error, {productId}) => [
+				{type: "Reviews", id: productId},
 			],
 		}),
 		createReview: builder.mutation({
-			query: ({token, idProduct, newReview}) => {
+			query: ({token, productId, newReview}) => {
 				return {
-					url: `${PRODUCTS_URL}/${idProduct}/reviews`,
+					url: `${PRODUCTS_URL}/${productId}/reviews`,
 					method: "POST",
 					body: newReview,
 					headers: {
@@ -174,8 +171,9 @@ const productsApiSlice = apiSlice.injectEndpoints({
 					},
 				};
 			},
-			invalidatesTags: (result, error, {idProduct}) => [
-				{type: "Reviews", id: idProduct},
+			invalidatesTags: (result, error, {productId}) => [
+				{type: "Reviews", id: productId},
+				{type: "ProductAdmin", id: productId},
 			],
 		}),
 	}),
@@ -201,7 +199,7 @@ export const {
 	useEditProductMutation,
 	useEditImageProductMutation,
 	useDeleteProductMutation,
-	useGetMyProductsQuery,
+	useGetProductsAdminQuery,
 	useCreateReviewMutation,
 	useGetReviewsQuery,
 	useGetProductBySearchQuery,

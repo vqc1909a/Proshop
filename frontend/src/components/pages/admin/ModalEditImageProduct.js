@@ -46,7 +46,7 @@ function ModalEditImageProduct(props) {
 		isError: isErrorProduct,
 		isLoading: isLoadingProduct,
 		error: errorProduct,
-	} = useGetProductByIdQuery({token, idProduct: idProductSelected});
+	} = useGetProductByIdQuery({token, productId: idProductSelected});
 	const product = dataProduct?.body || {};
 
 	//Solo para peticiones get que necesiten de un token para autenticación
@@ -104,7 +104,7 @@ function ModalEditImageProduct(props) {
 								let formData = new FormData(formEditImageProduct.current);
 								await editImageProduct({
 									token,
-									idProduct: values.id,
+									productId: values.id,
 									newProduct: formData,
 								}).unwrap();
 								newImagePreview.current.innerHTML = "";
