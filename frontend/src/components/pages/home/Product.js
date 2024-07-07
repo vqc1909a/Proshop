@@ -1,20 +1,19 @@
 import {Card} from "react-bootstrap";
-import Rating from "components/Rating";
+import Rating from "components/RatingProduct";
 import {useNavigate} from "react-router-dom";
 import PropTypes from "prop-types";
-
 
 //Helpers
 // import * as HELPERS from "utils/helpers"
 
 function Product({product}) {
-  let navigate = useNavigate();
-    
-  const {/* id: idProduct, */ slug, image, name, priceIVA} = product; 
- 
-  // let imgBase64 = HELPERS.ImageToBase64Converter2(image);
+	let navigate = useNavigate();
 
-  return (
+	const {id: productId, slug, image, name, priceIVA} = product;
+
+	// let imgBase64 = HELPERS.ImageToBase64Converter2(image);
+
+	return (
 		<Card className="my-3 p-3 rounded">
 			<div
 				style={{cursor: "pointer"}}
@@ -44,7 +43,7 @@ function Product({product}) {
 					</Card.Title>
 				</div>
 				<Card.Text as="div">
-					<Rating selectedProduct={product}></Rating>
+					<Rating productId={productId}></Rating>
 				</Card.Text>
 
 				<Card.Text as="h3">${priceIVA}</Card.Text>
@@ -54,6 +53,6 @@ function Product({product}) {
 }
 
 Product.propTypes = {
-    product: PropTypes.object.isRequired,
-}
-export default Product
+	product: PropTypes.object.isRequired,
+};
+export default Product;

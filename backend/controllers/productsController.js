@@ -346,17 +346,24 @@ export const deleteProduct = asyncHandler(async(req, res, next) => {
 // @desc    Get reviews of product
 // @route   GET /api/products/:id/reviews
 // @access  Public
-export const getReviews = asyncHandler( async(req, res) => {
-    const productId = req.params.id;
-    const reviews = await Review.find({productId}).populate("userId productId");
-    const countReviews = reviews.length;
-    const rating = countReviews > 0 ? parseFloat(reviews.reduce((acc, review) => acc + review.rating, 0) / countReviews).toFixed(2) : 0;
-    return res.status(200).json({body: {
-        reviews,
-        countReviews,
-        rating
-    }})
-})
+export const getReviewsByProduct = asyncHandler(async (req, res) => {
+	const productId = req.params.id;
+	const reviews = await Review.find({productId}).populate("userId productId");
+	const countReviews = reviews.length;
+	const rating =
+		countReviews > 0
+			? parseFloat(
+					reviews.reduce((acc, review) => acc + review.rating, 0) / countReviews
+			  ).toFixed(2)
+			: 0;
+	return res.status(200).json({
+		body: {
+			reviews,
+			countReviews,
+			rating,
+		},
+	});
+});
 
 
 // @desc    Create a review
@@ -387,18 +394,9 @@ export const createReview = asyncHandler( async(req, res) => {
         comment: body.comment,
         rating: Number(body.rating)
     }
-    await Review.create(review);
-
-    //Otra vez solicitamos los reviews;
-    const newReviews = await Review.find({productId});
-
-    //Una vez creado el review, actualizamos los datos del producto
-    const bodyProduct = {
-        numReviews: newReviews.length,
-        rating: parseFloat(newReviews.reduce((acc, review)  => acc + review.rating, 0) / newReviews.length).toFixed(2),
-    }
-    const updatedProduct = await Product.findOneAndUpdate({_id: productId}, bodyProduct, {runValidators: true, new: true});
-    return res.status(200).json({message: "Review added", body: updatedProduct})
+    const reviewCreated = await Review.create(review);
+ 
+    return res.status(200).json({message: "Review added", body: reviewCreated});
 })
 
 

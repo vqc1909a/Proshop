@@ -21,7 +21,7 @@ Router.route("/admin/:id/change-image").put(MIDDLEWARES.verifyAuthentication, MI
 
 Router.route("/:slug").get(PRODUCTS_CONTROLLER.getProductBySlug);
 
-Router.route("/:id/reviews").get(PRODUCTS_CONTROLLER.getReviews);
+Router.route("/:id/reviews").get(PRODUCTS_CONTROLLER.getReviewsByProduct);
 Router.route("/:id/reviews").post(MIDDLEWARES.verifyAuthentication, PRODUCTS_CONTROLLER.createReview);
 
 export default Router

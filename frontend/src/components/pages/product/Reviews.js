@@ -1,9 +1,9 @@
 import {Col, ListGroup, Row} from "react-bootstrap";
-import {useGetReviewsQuery} from "apis/productsApi";
+import {useGetReviewsByProductQuery} from "apis/productsApi";
 import Loader from "components/Loader";
 import Message from "components/Message";
-import Rating from "components/Rating";
 import FormReview from "./FormReview";
+import {RatingUser} from "components/RatingUser";
 
 const Reviews = ({productId, refetchProduct}) => {
 	const {
@@ -11,9 +11,8 @@ const Reviews = ({productId, refetchProduct}) => {
 		isError: isErrorReviews,
 		isLoading: isLoadingReviews,
 		error: errorReviews,
-	} = useGetReviewsQuery({productId});
+	} = useGetReviewsByProductQuery({productId});
 	const reviews = dataReviews?.body?.reviews || [];
-
 	return (
 		<Row className="review">
 			<Col md={6}>
@@ -34,8 +33,7 @@ const Reviews = ({productId, refetchProduct}) => {
 								style={{paddingLeft: 0, paddingRight: 0}}
 							>
 								<strong>{review.userId.name}</strong>
-								<Rating rating={review.rating}></Rating>
-								<p>{review.createdAt.substring(0, 10)}</p>
+								<RatingUser rating={review.rating} date={review.createdAt} />
 								<p>{review.comment}</p>
 							</ListGroup.Item>
 						))}

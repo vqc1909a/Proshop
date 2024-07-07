@@ -49,7 +49,7 @@ const productsApiSlice = apiSlice.injectEndpoints({
 				url: `${PRODUCTS_URL}/${slug}`,
 			}),
 			keepUnusedDataFor: 60,
-			//Aqui definimos el tag con el type Product pero con el slug del producto, y si en alugna mutacion quieres cancelar el tag, el objeto dentro de invalidatesTags tiene que ser este mismo objeto { type: 'Post', slug }
+			//Aqui definimos el tag con el type Product pero con el slug del producto, y si en alugna mutacion quieres cancelar el cache de este endpoint, el objeto dentro de invalidatesTags tiene que ser este mismo objeto { type: 'Post', slug }
 			providesTags: (result, error, slug) => [{type: "Product", slug}],
 		}),
 		// ADMIN
@@ -148,7 +148,7 @@ const productsApiSlice = apiSlice.injectEndpoints({
 			},
 			invalidatesTags: (result, error) => ["Products", "ProductsAdmin"],
 		}),
-		getReviews: builder.query({
+		getReviewsByProduct: builder.query({
 			query: ({productId}) => {
 				return {
 					url: `${PRODUCTS_URL}/${productId}/reviews`,
@@ -201,7 +201,7 @@ export const {
 	useDeleteProductMutation,
 	useGetProductsAdminQuery,
 	useCreateReviewMutation,
-	useGetReviewsQuery,
+	useGetReviewsByProductQuery,
 	useGetProductBySearchQuery,
 	useGetTopProductsQuery,
 } = productsApiSlice;
