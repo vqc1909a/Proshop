@@ -28,36 +28,36 @@ function SearchScreen() {
 		<>
 			<Meta title={`Resultados Búsqueda: {keyword}`}></Meta>
 			<h1>Resultados Búsqueda: {keyword}</h1>
-			<Row>
-				{isLoading ? (
-					/* <Loader /> */
-					[...Array(8).keys()].map((key) => (
+			{isLoading ? (
+				/* <Loader /> */
+				<Row>
+					{[...Array(4).keys()].map((key) => (
 						<Col sm={12} md={6} lg={4} xl={3} key={key}>
 							<ProductLoader className="my-3" />
 						</Col>
-					))
-				) : isError ? (
-					<Message variant="danger">
-						{error?.data?.message || error?.error}
-					</Message>
-				) : products.length ? (
-					<>
+					))}
+				</Row>
+			) : isError ? (
+				<Message variant="danger">
+					{error?.data?.message || error?.error}
+				</Message>
+			) : products.length ? (
+				<>
+					<Row>
 						{products.map((product) => (
 							<Col sm={12} md={6} lg={4} xl={3} key={product.id}>
 								<Product product={product}></Product>
 							</Col>
 						))}
-					</>
-				) : (
-					<h3>Sin Productos</h3>
-				)}
-			</Row>
-			{products.length > 0 && (
-				<Paginate
-					pathname={`/search/${keyword}`}
-					totalPages={totalPages}
-					page={pageNow}
-				></Paginate>
+					</Row>
+					<Paginate
+						pathname={`/search/${keyword}`}
+						totalPages={totalPages}
+						page={pageNow}
+					></Paginate>
+				</>
+			) : (
+				<h3>Sin Productos</h3>
 			)}
 		</>
 	);

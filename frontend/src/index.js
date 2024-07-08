@@ -6,7 +6,8 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import {BrowserRouter} from "react-router-dom";
 import {Provider} from "react-redux";
-import store from "redux/store";
+import {store} from "redux/store";
+
 // Se espera que los desarrolladores que se integran con PayPal agreguen el JS SDK <script> a un sitio web y luego representen componentes como los botones de PayPal después de que se cargue el script. Esta arquitectura funciona muy bien para sitios web simples, pero puede resultar desafiante al crear aplicaciones de una sola página.
 
 // react-paypal-js proporciona una solución a los desarrolladores para abstraer las complejidades relacionadas con la carga del SDK de JS. Aplica las mejores prácticas de forma predeterminada para que los compradores obtengan la mejor experiencia de usuario posible.

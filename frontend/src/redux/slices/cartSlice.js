@@ -1,8 +1,8 @@
 import {createSlice} from "@reduxjs/toolkit";
 
-const items = localStorage.getItem("cartItems") ? JSON.parse(localStorage.getItem("cartItems")) : [];
-const paymentMethod = localStorage.getItem("paymentMethod") ? JSON.parse(localStorage.getItem("paymentMethod")) : "Paypal";
-const shippingAddress = localStorage.getItem("shippingAddress") ? JSON.parse(localStorage.getItem("shippingAddress")) : {};
+const items = JSON.parse(localStorage.getItem("cartItems") ?? '[]');
+const paymentMethod = JSON.parse(localStorage.getItem("paymentMethod") ?? '"Paypal"');
+const shippingAddress = JSON.parse(localStorage.getItem("shippingAddress") ?? '{}');
 
 const qtyItems = items.reduce((acc, item) => acc + item.qty, 0);
 const itemsPrice = parseFloat(items.reduce((acc, item) => acc + (item.price * item.qty), 0).toFixed(2));
@@ -16,7 +16,6 @@ const updateCart = (state) => {
     state.taxPrice = parseFloat((state.totalPrice - state.itemsPrice).toFixed(2));
     //AQui hacemos el cacluclo otra xq solo estamos aumentanto el precio total xq si lo hacemos de forma unica el taxPrice va a dar un valor erroneo
     state.totalPrice = state.totalPrice + (state.shippingAddress?.regionId?.shippingPrice || 0);
-    localStorage.setItem("cartItems", JSON.stringify(state.items));
 }
 const cartSlice = createSlice({
     name: "cart",
