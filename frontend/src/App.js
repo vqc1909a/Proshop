@@ -83,7 +83,7 @@ function App() {
                         </Route>
 
                         {/* Configuración de rutas del Admin */}
-                        <Route path="/" element={<ProtectedRouteAdmin redirectPath="/account/profile"/>}>
+                        <Route path="/" element={<ProtectedRouteAdmin redirectPath="/auth/login" />}>
                             <Route path="admin/orders" element={<OrderAdminScreen></OrderAdminScreen>}></Route>
                             <Route path="admin/products" element={<ProductAdminScreen></ProductAdminScreen>}></Route>
                             <Route path="admin/users" element={<UserAdminScreen></UserAdminScreen>}></Route>

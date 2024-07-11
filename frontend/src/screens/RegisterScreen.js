@@ -1,7 +1,7 @@
 import React from "react";
 import {Link, useNavigate} from "react-router-dom";
 import {Form, Button, Row, Col, Spinner} from "react-bootstrap";
-import {useDispatch, useSelector} from "react-redux";
+import {useDispatch} from "react-redux";
 import Message from "components/Message";
 // import Loader from "components/Loader";
 import FormContainer from "components/hocs/FormContainer";
@@ -9,8 +9,6 @@ import FormContainer from "components/hocs/FormContainer";
 //Actions
 import * as AUTH_ACTIONS from "../redux/slices/authSlice";
 
-//Selectors
-import * as AUTH_SELECTORS from "../redux/selectors/authSelector";
 
 //Services
 import {useRegisterMutation} from "apis/authApi";
@@ -22,8 +20,6 @@ function RegisterScreen() {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 	const [register, {isError, isLoading, error}] = useRegisterMutation();
-
-	let redirectTo = useSelector(AUTH_SELECTORS.selectRedirectTo);
 
 	const {
 		name,
@@ -44,9 +40,9 @@ function RegisterScreen() {
 		try {
 			const token = await register(user).unwrap();
 			dispatch(AUTH_ACTIONS.registerSuccess(token.body));
-			navigate(redirectTo);
-			//Reseteamos la redirección a la ruta por defecto
-			dispatch(AUTH_ACTIONS.saveRedirectTo("/"));
+
+			const lastPath = localStorage.getItem("lastPath") || "/";
+			navigate(lastPath, {replace: true});
 		} catch (err) {
 			dispatch(AUTH_ACTIONS.logout());
 		}

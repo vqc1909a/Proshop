@@ -9,7 +9,6 @@ const ProtectedRoutePublic = ({children, redirectPath = "/"}) => {
         return <Navigate to={redirectPath} replace={true}></Navigate>
     }
     //Outlet es el ejemplo de lo que tenemos en el mapeo de rutas
-
     return children ? children : <Outlet />;
 };
 

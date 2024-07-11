@@ -25,11 +25,10 @@ const authSlice = createSlice({
     name: "auth",
     initialState: {
         isLogged,
-        redirectTo: "/",
         userInfo: {
             name:"",
             email:"",
-            isAdmin:false,
+            isAdmin: false,
             shippingAddresses: []
         }
     },
@@ -43,9 +42,6 @@ const authSlice = createSlice({
             const token = action.payload;
             state.isLogged = true;
             localStorage.setItem("token", JSON.stringify(token));
-        },
-        saveRedirectTo(state, action){
-            state.redirectTo = action.payload;
         },
         getProfileSuccess(state, action){
             const userInfo = action.payload;
@@ -68,7 +64,6 @@ const authSlice = createSlice({
         builder
         .addCase(logout.fulfilled, (state, action) => {
             state.isLogged = false;     
-            state.redirectTo =  "/";
             state.userInfo = {name: "", email: "", isAdmin: false, shippingAddresses: []};
             //Remover todo el localStorage excepto los items del carrito de compras
             removeToken()
@@ -79,7 +74,6 @@ const authSlice = createSlice({
 export const {
     loginSuccess,
     registerSuccess,
-    saveRedirectTo,
     getProfileSuccess,
     updateProfileSuccess,
     addShippingAddressSuccess,

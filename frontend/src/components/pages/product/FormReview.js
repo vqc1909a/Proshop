@@ -56,9 +56,10 @@ const FormReview = ({productId, refetchProduct}) => {
 	const handleSubmit = async (e, review) => {
 		e.preventDefault();
 		try {
-			//HACEMOS LA REDIRECCION DE FORMA MANUAL, YA QUE ANTERIOEMNTE LO HICIMOS CON EL HOC PROTECTEDROUTEPRIVATE
+			//HACEMOS LA REDIRECCION DE FORMA MANUAL, YA QUE ANTERIOEMNTE LO HICIMOS CON EL HOC PROTECTEDROUTEPRIVATE Y COMO ESTA RUTA ES PUBLICA, ESO NO VA A FUNCIONAR
 			if (!isLogged) {
-				dispatch(AUTH_ACTIONS.saveRedirectTo(location.pathname));
+				const lastPath = location.pathname + location.search;
+				localStorage.setItem("lastPath", lastPath);
 				navigate("/auth/login");
 			}
 
