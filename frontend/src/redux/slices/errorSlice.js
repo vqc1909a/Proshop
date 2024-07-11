@@ -6,12 +6,15 @@ const errorSlice = createSlice({
         message: ""
     },
     reducers: {
+        clearMessage: (state) => {
+            state.message = "";
+        },
         saveMessage: (state, action) => {
             state.message = action.payload;
         }
     }
 })
 
-export const {saveMessage} = errorSlice.actions;
+export const {saveMessage, clearMessage} = errorSlice.actions;
 
 export default errorSlice.reducer;

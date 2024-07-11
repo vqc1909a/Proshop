@@ -84,14 +84,11 @@ const FormReview = ({productId, refetchProduct}) => {
 				});
 				setErrors({...errors});
 			}
-			//Error global
+			//Error de autenticación
 			if (err.status === 401 || err.status === 403) {
 				dispatch(
-					ERROR_ACTIONS.saveMessage(
-						err?.data?.message || err?.error || err.message
-					)
+					AUTH_ACTIONS.logout(err?.data?.message || err?.error || err.message)
 				);
-				dispatch(AUTH_ACTIONS.logout());
 			}
 		}
 	};

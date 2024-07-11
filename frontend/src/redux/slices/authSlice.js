@@ -1,5 +1,7 @@
 import {createAsyncThunk ,createSlice} from "@reduxjs/toolkit";
 import * as CART_ACTIONS from "./cartSlice";
+import * as ERROR_ACTIONS from "./errorSlice";
+
 
 const token = localStorage.getItem("token") ? JSON.parse(localStorage.getItem("token")) : "";
 const isLogged = token ? true : false;
@@ -7,10 +9,11 @@ const isLogged = token ? true : false;
 //Primero se ejecuta esto, luego lo de abajo. Si no harías esto, simplemente pasas lo de abajo dentro de reducers
 export const logout = createAsyncThunk(
   "auth/logout",
-  async (parametroDeLaFuncion, thunkAPI) => {
-    console.log("Ejecutando logout")
-    //Borrarme todos los datos del carrito de compras excepto los items, no tendríamos la necesidad de esto si es que siempre recargaríamos la paginas que navegamos porque abajo lo eliminamos del localStorage pero faltra eliminarlo en memoria
+  async (messageError, thunkAPI) => {
+    //Borrarme todos los datos del carrito de compras excepto los items y mostramos el mensaje de error
     thunkAPI.dispatch(CART_ACTIONS.resetFieldsByLogout());
+    thunkAPI.dispatch(ERROR_ACTIONS.clearMessage());
+    thunkAPI.dispatch(ERROR_ACTIONS.saveMessage(messageError));
     return ;
   }
 );

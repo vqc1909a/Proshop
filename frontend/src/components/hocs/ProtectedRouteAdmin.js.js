@@ -7,8 +7,8 @@ const ProtectedRouteAdmin = ({children, redirectPath = "/"})  => {
     const lastPath = pathname + search;
 
     const isLogged = useSelector(AUTH_SELECTORS.selectIsLogged);
-    const isAdmin = useSelector(AUTH_SELECTORS.selectIsAdmin);
-    
+    const isAdmin = Boolean(JSON.parse(localStorage.getItem("isAdmin") ?? "false"))
+
     console.log({
         lastPath,
         isLogged,

@@ -34,9 +34,7 @@ function Header() {
 	const isLogged = useSelector(AUTH_SELECTORS.selectIsLogged);
 	const userInfo = useSelector(AUTH_SELECTORS.selectUserInfo);
 	const qtyItems = useSelector(CART_SELECTORS.selectQtyItems);
-	const isAdmin = localStorage.getItem("isAdmin")
-		? Boolean(JSON.parse(localStorage.getItem("isAdmin")))
-		: false;
+	const isAdmin = Boolean(JSON.parse(localStorage.getItem("isAdmin") ?? "false"))
 	const [showToastError, setShowToastError] = useState(false);
 	const [showToastIsLogged, setShowToastIsLogged] = useState(false);
 
@@ -54,14 +52,12 @@ function Header() {
 			try {
 				//Con el unwrap(), obtengo defrente la respuesta  sin la necesidad de respuesta del hook y si hay algun error el error sera el catch "err" y es lo mismo de arriba
 				const userInfo = await getProfile(token).unwrap();
-				//Establecemos si el usuario es admin o no, xq con el useEffect no lo vamos a poder obtener a tiempo el valor de userInfo en los hooks
+				//Establecemos si el usuario es admin o no, xq con el useEffect no lo vamos a poder obtener a tiempo el valor de userInfo en los hocs
 				localStorage.setItem("isAdmin", userInfo.body.isAdmin);
 				dispatch(AUTH_ACTIONS.getProfileSuccess(userInfo.body));
 			} catch (err) {
-				//AQui no verificamos si el status es 401 o 403 xq si hay un error al obtener al usuario entonces que me desloguee automaticamente
-				//AQui el problema es que no me ecjutara el segundo dispatch porque con el primer dispatch actualizamos un estado que es isLogged y antes de ejcejcuta el segundo dispathc se actualizara el componente, es por eos que no lo ejeucta el segundo dispatch, para solucionar eso uamso redux saga => pendiente
-				dispatch(AUTH_ACTIONS.logout());
-				// dispatch(ERROR_ACTIONS.saveMessage(error?.data?.message || error?.error || error.message))
+				//El formato de error es lo mismo que RTK Query
+				dispatch(AUTH_ACTIONS.logout(err?.data?.message || err?.error || err.message));
 			}
 		};
 		getLoggedUser(token);

@@ -1,9 +1,9 @@
-import React, {Suspense} from 'react';
-import ReactDOM from 'react-dom';
+import React, {Suspense} from "react";
+import ReactDOM from "react-dom";
 import "./bootstrap.min.css";
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import "./index.css";
+import App from "./App";
+import reportWebVitals from "./reportWebVitals";
 import {BrowserRouter} from "react-router-dom";
 import {Provider} from "react-redux";
 import {store} from "redux/store";
@@ -18,9 +18,8 @@ import {store} from "redux/store";
 // * PayPalMessages
 // * PayPalHostedFields
 // * BraintreePayPalButtons
-import { PayPalScriptProvider } from "@paypal/react-paypal-js";
-import Fallback from 'components/layouts/Fallback';
-
+import {PayPalScriptProvider} from "@paypal/react-paypal-js";
+import Fallback from "components/layouts/Fallback";
 
 // const initialOptions = {
 //     clientId: "test",
@@ -28,10 +27,10 @@ import Fallback from 'components/layouts/Fallback';
 //     intent: "capture",
 // };
 
-ReactDOM.render(  
-  <React.StrictMode>
-    <Provider store={store}>
-      {/*
+ReactDOM.render(
+	<React.StrictMode>
+		<Provider store={store}>
+			{/*
       
       This prop is set to false by default since we usually know all the sdk script params upfront and want to load the script right away so components like <PayPalButtons /> render immediately.
 
@@ -40,16 +39,16 @@ ReactDOM.render(
       Cuando estableces deferLoading={true}, estás indicando que el script de PayPal no se cargará inmediatamente cuando el componente PayPalScriptProvider se monte en el árbol de componentes. En cambio, el script se cargará de manera diferida en el momento en que sea necesario, es decir, cuando algún otro componente de tu aplicación requiera el uso de funcionalidades de PayPal que dependan del script.
 
       Esto puede ser útil para optimizar el rendimiento de tu aplicación, ya que el script de PayPal es un recurso externo y puede afectar el tiempo de carga inicial. Al diferir su carga hasta que sea necesario, puedes evitar una carga innecesaria si no se utiliza la funcionalidad de PayPal en todas las partes de tu aplicación. */}
-      <PayPalScriptProvider deferLoading={true} options={{}} >
-        <Suspense fallback={<Fallback />}>
-          <BrowserRouter>
-            <App />
-          </BrowserRouter>
-        </Suspense>  
-      </PayPalScriptProvider>
-    </Provider>
-  </React.StrictMode>,
-  document.getElementById('root')
+			<PayPalScriptProvider deferLoading={true} options={{}}>
+				<Suspense fallback={<Fallback />}>
+					<BrowserRouter>
+						<App />
+					</BrowserRouter>
+				</Suspense>
+			</PayPalScriptProvider>
+		</Provider>
+	</React.StrictMode>,
+	document.getElementById("root")
 );
 
 // If you want to start measuring performance in your app, pass a function
