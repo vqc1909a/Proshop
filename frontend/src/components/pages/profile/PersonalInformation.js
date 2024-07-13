@@ -10,7 +10,6 @@ import * as AUTH_SELECTORS from "redux/selectors/authSelector";
 
 //Actions
 import * as AUTH_ACTIONS from "redux/slices/authSlice";
-import * as ERROR_ACTIONS from "redux/slices/errorSlice";
 
 //Services
 import {useUpdateProfileMutation} from "apis/profileApi";
@@ -38,16 +37,12 @@ function PersonalInformation() {
 			//Error global
 			if (err.status === 401 || err.status === 403) {
 				dispatch(
-					ERROR_ACTIONS.saveMessage(
-						err?.data?.message || err?.error || err.message
-					)
+					AUTH_ACTIONS.logout(err?.data?.message || err?.error || err.message)
 				);
-				dispatch(AUTH_ACTIONS.logout());
 			}
 		}
 	};
 
-	//Resetear mensaje al cambiar de pagina
 	const handleChangePassword = () => {
 		navigate("/account/profile/change-password");
 	};

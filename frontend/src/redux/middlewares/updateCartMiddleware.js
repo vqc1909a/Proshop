@@ -4,10 +4,10 @@ export const updateCartMiddleware = (state) => {
 	return (next) => (action) => {
 		
 		next(action);
-		console.log({
-			state: state.getState(),
-			action,
-		});
+		// console.log({
+		// 	state: state.getState(),
+		// 	action,
+		// });
 		const actions = [
 			"cart/addItem",
 			"cart/removeItem",

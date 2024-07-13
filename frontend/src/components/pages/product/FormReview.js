@@ -7,7 +7,6 @@ import {useCreateReviewMutation} from "apis/productsApi";
 import useForm from "utils/hooks/useForm";
 
 //ACTIONS
-import * as ERROR_ACTIONS from "redux/slices/errorSlice";
 import * as AUTH_ACTIONS from "redux/slices/authSlice";
 
 //SELECTORS
@@ -64,14 +63,14 @@ const FormReview = ({productId, refetchProduct}) => {
 			}
 
 			const token = JSON.parse(localStorage.getItem("token"));
-			//validData es simplemente  el objeto con sus valores
+			//aboutEarly: collect all validation errors, instead of stopping at the first error encountered. This is useful for cases where you want to inform the user of all validation issues at once, rather than one by one.
 			await reviewSchema.validate(review, {abortEarly: false});
 			const newReview = {
 				...review,
 				productId,
 				userId: userInfo.id,
 			};
-			await createReview({token, productId, newReview});
+			await createReview({token, productId, newReview}).unwrap();
 			setForm(REVIEW_DEFAULT);
 			setErrors({});
 			refetchProduct();

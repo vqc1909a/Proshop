@@ -6,7 +6,6 @@ import Message from "components/Message";
 
 //Actions
 import * as AUTH_ACTIONS from "../redux/slices/authSlice";
-import * as ERROR_ACTIONS from "../redux/slices/errorSlice";
 
 //Services
 import {useUpdatePasswordMutation} from "apis/profileApi";
@@ -38,31 +37,29 @@ function ChangePasswordScreen() {
 	const submitUpdatePassword = async ({
 		event,
 		passwords,
-		errorRequest,
-		isSuccessRequest,
 	}) => {
 		event.preventDefault();
-		//Se supones que el usuario esta logueado, por ello obtenemos el token directamente
-		const token = localStorage.getItem("token")
-			? JSON.parse(localStorage.getItem("token"))
-			: "";
 		try {
+			const token = JSON.parse(localStorage.getItem("token"));
+			console.log({
+				token
+			})
 			//unwrap es para obtener la respuesta directamente o en caso de error err tome el valor de error
 			await updatePassword({token, passwords}).unwrap();
 			setForm(PASSWORD_DEFAULT);
 		} catch (err) {
+			console.log({
+				err
+			})
 			//Error global
 			if (err.status === 401 || err.status === 403) {
 				dispatch(
-					ERROR_ACTIONS.saveMessage(
-						err?.data?.message || err?.error || err.message
-					)
+					AUTH_ACTIONS.logout(err?.data?.message || err?.error || err.message)
 				);
-				dispatch(AUTH_ACTIONS.logout());
 			}
 		}
 	};
-	//Resetear mensaje al cmabiar de pagina
+
 	const handleButtonGoBack = () => {
 		navigate("/account/profile");
 	};
@@ -83,8 +80,6 @@ function ChangePasswordScreen() {
 						submitUpdatePassword({
 							event,
 							passwords,
-							errorRequest: error,
-							isSuccessRequest: isSuccess,
 						})
 					}
 				>
