@@ -20,7 +20,6 @@ import {
 	useGetProductsAdminQuery,
 } from "apis/productsApi";
 import {useDispatch, useSelector} from "react-redux";
-import {nanoid} from "nanoid";
 
 //Selectors
 import * as AUTH_SELECTORS from "redux/selectors/authSelector";
@@ -55,9 +54,8 @@ function ProductAdminScreen() {
 	const [modalCreateProduct, setModalCreateProduct] = useState(false);
 	const [modalEditProduct, setModalEditProduct] = useState(false);
 	const [modalEditImageProduct, setModalEditImageProduct] = useState(false);
-	const [idProductSelected, setIdProductSelected] = useState("");
-	const [keynewmodal, setkeynewmodal] = useState(nanoid());
-	const [deleteProduct, {reset}] = useDeleteProductMutation();
+	const [productIdSelected, setIdProductSelected] = useState("");
+	const [deleteProduct] = useDeleteProductMutation();
 
 	const isSuperAdmin = useSelector(AUTH_SELECTORS.selectIsSuperAdmin);
 
@@ -68,10 +66,9 @@ function ProductAdminScreen() {
 	);
 
 	const handleAddProduct = () => {
-		setkeynewmodal(nanoid());
 		setModalCreateProduct(true);
 	};
-	const handleDeleteProduct = (idProduct) => {
+	const handleDeleteProduct = (productId) => {
 		Swal.fire({
 			title:
 				"Estás seguro de eliminar este producto y los comentarios recibidos?",
@@ -83,59 +80,52 @@ function ProductAdminScreen() {
 			confirmButtonText: "Si, eliminar!",
 		}).then(async (result) => {
 			if (result.isConfirmed) {
-				const token = localStorage.getItem("token")
-					? JSON.parse(localStorage.getItem("token"))
-					: "";
+				const token = JSON.parse(localStorage.getItem("token") ?? '""');
 				try {
-					const data = await deleteProduct({token, idProduct}).unwrap();
+					const data = await deleteProduct({token, productId}).unwrap();
 					Swal.fire("Eliminado!", data.message, "success");
-					//Ponemos este reset solo para que no me vote el warning de no usar algun estado de la mutación en la aprte  dearriba
-					reset();
 				} catch (err) {
 					Swal.fire({
 						icon: "error",
 						title: "Oops...",
 						text: err?.data?.message || err?.error || err.message,
 					});
+					const message = err?.data?.message || err?.error || err.message;
 					if (err.status === 401 || err.status === 403) {
-						dispatch(
-							ERROR_ACTIONS.saveMessage(
-								err?.data?.message || err?.error || err.message
-							)
-						);
-						dispatch(AUTH_ACTIONS.logout());
+						dispatch(AUTH_ACTIONS.logout(message));
+					} else {
+						dispatch(ERROR_ACTIONS.saveMessage(message));
 					}
 				}
 			}
 		});
 	};
 
-	const handleEditProduct = (idProduct) => {
-		setIdProductSelected(idProduct);
+	const handleEditProduct = (productId) => {
+		setIdProductSelected(productId);
 		setModalEditProduct(true);
 	};
 
-	const handleEditImageProduct = (idProduct) => {
-		setIdProductSelected(idProduct);
+	const handleEditImageProduct = (productId) => {
+		setIdProductSelected(productId);
 		setModalEditImageProduct(true);
 	};
 	return (
 		<>
-			{/* Cuando llamas a estos componentes ya esta llamando todo lo que esta dentro de ello incluyendo le useEffect, el tema de montaje o desmontaje es cuando desaparrece el dom pero qui el show y el onHide simplemente lo oculta y lo hace desaparecer, no desaparece el DOM. ESto ya esta del modal de react-bootstrap */}
+			{/* Cuando llamas a estos componentes ya esta llamando todo lo que esta dentro de ello incluyendo el useEffect, el tema de montaje o desmontaje es cuando desaparrece el dom pero aqui el show y el onHide simplemente lo oculta, no desaparece el DOM. Esto ya es parte del modal de react-bootstrap */}
 			<ModalCreateProduct
 				show={modalCreateProduct}
 				onHide={() => setModalCreateProduct(false)}
-				keynewmodal={keynewmodal}
 			/>
 			<ModalEditProduct
 				show={modalEditProduct}
 				onHide={() => setModalEditProduct(false)}
-				idProductSelected={idProductSelected}
+				productIdSelected={productIdSelected}
 			/>
 			<ModalEditImageProduct
 				show={modalEditImageProduct}
 				onHide={() => setModalEditImageProduct(false)}
-				idProductSelected={idProductSelected}
+				productIdSelected={productIdSelected}
 			/>
 			<Row className="align-items-center">
 				<Col>
@@ -176,7 +166,14 @@ function ProductAdminScreen() {
 							{products.map((product) => (
 								<tr key={product.id}>
 									<td>
-										<Link to={`/products/${product.slug}`}>{product.id}</Link>
+										<Link
+											to={`/products/${product.slug}`}
+											target="_blank"
+											// Always apply “noopener noreferrer” to any links that lead to websites you don't own or control
+											// rel="noopener noreferrer"
+										>
+											{product.id}
+										</Link>
 									</td>
 									<td>{product.name}</td>
 									<td>

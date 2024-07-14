@@ -52,7 +52,7 @@ function UserAdminScreen() {
 	const [modalEditUser, setModalEditUser] = useState(false);
 	const [userIdSelected, setUserIdSelected] = useState("");
 	const [keynewmodal, setkeynewmodal] = useState(nanoid());
-	const [deleteUser, {reset}] = useDeleteUserMutation();
+	const [deleteUser] = useDeleteUserMutation();
 
 	const TooltipButton = ({id, children, title}) => (
 		<OverlayTrigger overlay={<Tooltip id={id}>{title}</Tooltip>}>
@@ -81,21 +81,17 @@ function UserAdminScreen() {
 				try {
 					const data = await deleteUser({token, userId}).unwrap();
 					Swal.fire("Eliminado!", data.message, "success");
-					//Ponemos este reset solo para que no me vote el warning de no usar algun estado de la mutación en la parte de arriba
-					reset();
 				} catch (err) {
 					Swal.fire({
 						icon: "error",
 						title: "Oops...",
 						text: err?.data?.message || err?.error || err.message,
 					});
+					const message = err?.data?.message || err?.error || err.message;
 					if (err.status === 401 || err.status === 403) {
-						dispatch(
-							ERROR_ACTIONS.saveMessage(
-								err?.data?.message || err?.error || err.message
-							)
-						);
-						dispatch(AUTH_ACTIONS.logout());
+						dispatch(AUTH_ACTIONS.logout(message));
+					} else {
+						dispatch(ERROR_ACTIONS.saveMessage(message));
 					}
 				}
 			}

@@ -8,6 +8,7 @@ import useForm from "utils/hooks/useForm";
 
 //ACTIONS
 import * as AUTH_ACTIONS from "redux/slices/authSlice";
+import * as ERROR_ACTIONS from "redux/slices/errorSlice";
 
 //SELECTORS
 import * as AUTH_SELECTORS from "redux/selectors/authSelector";
@@ -84,10 +85,11 @@ const FormReview = ({productId, refetchProduct}) => {
 				setErrors({...errors});
 			}
 			//Error de autenticación
+			const message = err?.data?.message || err?.error || err.message;
 			if (err.status === 401 || err.status === 403) {
-				dispatch(
-					AUTH_ACTIONS.logout(err?.data?.message || err?.error || err.message)
-				);
+				dispatch(AUTH_ACTIONS.logout(message));
+			} else {
+				dispatch(ERROR_ACTIONS.saveMessage(message));
 			}
 		}
 	};

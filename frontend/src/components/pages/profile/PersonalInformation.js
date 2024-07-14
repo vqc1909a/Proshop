@@ -10,6 +10,7 @@ import * as AUTH_SELECTORS from "redux/selectors/authSelector";
 
 //Actions
 import * as AUTH_ACTIONS from "redux/slices/authSlice";
+import * as ERROR_ACTIONS from "redux/slices/errorSlice";
 
 //Services
 import {useUpdateProfileMutation} from "apis/profileApi";
@@ -34,11 +35,11 @@ function PersonalInformation() {
 			const userInfo = await updateProfile({token, profile}).unwrap();
 			dispatch(AUTH_ACTIONS.updateProfileSuccess(userInfo.body));
 		} catch (err) {
-			//Error global
+			const message = err?.data?.message || err?.error || err.message;
 			if (err.status === 401 || err.status === 403) {
-				dispatch(
-					AUTH_ACTIONS.logout(err?.data?.message || err?.error || err.message)
-				);
+				dispatch(AUTH_ACTIONS.logout(message));
+			} else {
+				dispatch(ERROR_ACTIONS.saveMessage(message));
 			}
 		}
 	};

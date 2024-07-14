@@ -26,10 +26,8 @@ import Loader from "components/Loader";
 // noValidate es para que no me valide nada el propio navegador como el required en los campos especificados del componente <Form>
 
 function ModalEditImageProduct(props) {
-	const token = localStorage.getItem("token")
-		? JSON.parse(localStorage.getItem("token"))
-		: "";
-	const {idProductSelected} = props;
+	const token = JSON.parse(localStorage.getItem("token") || '""');
+	const {productIdSelected} = props;
 	const dispatch = useDispatch();
 	const {Formik} = formik;
 	const schema = yup.object().shape({
@@ -46,17 +44,15 @@ function ModalEditImageProduct(props) {
 		isError: isErrorProduct,
 		isLoading: isLoadingProduct,
 		error: errorProduct,
-	} = useGetProductByIdQuery({token, productId: idProductSelected});
+	} = useGetProductByIdQuery({token, productId: productIdSelected});
 	const product = dataProduct?.body || {};
 
 	//Solo para peticiones get que necesiten de un token para autenticación
+	const messageProduct = errorProduct?.data?.message || errorProduct?.error || errorProduct?.message;
 	if (errorProduct?.status === 401 || errorProduct?.status === 403) {
-		dispatch(
-			ERROR_ACTIONS.saveMessage(
-				errorProduct?.data?.message || errorProduct?.error
-			)
-		);
-		dispatch(AUTH_ACTIONS.logout());
+		dispatch(AUTH_ACTIONS.logout(messageProduct));
+	} else {
+		dispatch(ERROR_ACTIONS.saveMessage(messageProduct));
 	}
 
 	const newImagePreview = useRef();
@@ -65,7 +61,7 @@ function ModalEditImageProduct(props) {
 	useEffect(() => {
 		reset();
 		//eslint-disable-next-line
-	}, [idProductSelected]);
+	}, [productIdSelected]);
 
 	return (
 		<Modal
@@ -96,9 +92,7 @@ function ModalEditImageProduct(props) {
 					<Formik
 						validationSchema={schema}
 						onSubmit={async (values) => {
-							const token = localStorage.getItem("token")
-								? JSON.parse(localStorage.getItem("token"))
-								: "";
+							const token = JSON.parse(localStorage.getItem("token") ?? '""');
 							try {
 								//Un input type file al enviarlo mediante una petición se resetea su valor a su valor inical o sea a nada pero el nombre seguira plasmado en el input type file pero el valor no
 								let formData = new FormData(formEditImageProduct.current);
@@ -109,13 +103,11 @@ function ModalEditImageProduct(props) {
 								}).unwrap();
 								newImagePreview.current.innerHTML = "";
 							} catch (err) {
+								const message = err?.data?.message || err?.error || err.message;
 								if (err.status === 401 || err.status === 403) {
-									dispatch(
-										ERROR_ACTIONS.saveMessage(
-											err?.data?.message || err?.error || err.message
-										)
-									);
-									dispatch(AUTH_ACTIONS.logout());
+									dispatch(AUTH_ACTIONS.logout(message));
+								} else {
+									dispatch(ERROR_ACTIONS.saveMessage(message));		
 								}
 							}
 						}}

@@ -80,14 +80,11 @@ function Shipping() {
 			dispatch(AUTH_ACTIONS.addShippingAddressSuccess(shippingAddresses.body));
 			setForm(SHIPPING_ADDRESS_DEFAULT);
 		} catch (err) {
-			//Error global
+			const message = err?.data?.message || err?.error || err.message;
 			if (err.status === 401 || err.status === 403) {
-				dispatch(
-					ERROR_ACTIONS.saveMessage(
-						err?.data?.message || err?.error || err.message
-					)
-				);
-				dispatch(AUTH_ACTIONS.logout());
+				dispatch(AUTH_ACTIONS.logout(message));
+			} else {
+				dispatch(ERROR_ACTIONS.saveMessage(message));
 			}
 		}
 	};
@@ -112,14 +109,11 @@ function Shipping() {
 					)
 				);
 			} catch (err) {
-				//Error global
+				const message = err?.data?.message || err?.error || err.message;
 				if (err.status === 401 || err.status === 403) {
-					dispatch(
-						ERROR_ACTIONS.saveMessage(
-							err?.data?.message || err?.error || err.message
-						)
-					);
-					dispatch(AUTH_ACTIONS.logout());
+					dispatch(AUTH_ACTIONS.logout(message));
+				} else {
+					dispatch(ERROR_ACTIONS.saveMessage(message));
 				}
 			}
 		},

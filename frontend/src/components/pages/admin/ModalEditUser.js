@@ -103,13 +103,11 @@ function ModalEditUser(props) {
 									newUser: values,
 								}).unwrap();
 							} catch (err) {
+								const message = err?.data?.message || err?.error || err.message;
 								if (err.status === 401 || err.status === 403) {
-									dispatch(
-										ERROR_ACTIONS.saveMessage(
-											err?.data?.message || err?.error || err.message
-										)
-									);
-									dispatch(AUTH_ACTIONS.logout());
+									dispatch(AUTH_ACTIONS.logout(message));
+								} else {
+									dispatch(ERROR_ACTIONS.saveMessage(message));
 								}
 							}
 						}}

@@ -23,11 +23,8 @@ import Loader from "components/Loader";
 // noValidate es para que no me valide nada el propio navegador como el required en los campos especificados del componente <Form>
 
 function ModalEditProduct(props) {
-	const token = localStorage.getItem("token")
-		? JSON.parse(localStorage.getItem("token"))
-		: "";
-
-	const {idProductSelected} = props;
+	const token = JSON.parse(localStorage.getItem("token") || '""');
+	const {productIdSelected} = props;
 	const dispatch = useDispatch();
 	const {Formik} = formik;
 	const schema = yup.object().shape({
@@ -54,23 +51,22 @@ function ModalEditProduct(props) {
 		isError: isErrorProduct,
 		isLoading: isLoadingProduct,
 		error: errorProduct,
-	} = useGetProductByIdQuery({token, productId: idProductSelected});
+	} = useGetProductByIdQuery({token, productId: productIdSelected});
 	const product = dataProduct?.body || {};
 
 	//Solo para peticiones get que necesiten de un token para autenticación
+	const messageProduct = errorProduct?.data?.message || errorProduct?.error || errorProduct?.message;
 	if (errorProduct?.status === 401 || errorProduct?.status === 403) {
-		dispatch(
-			ERROR_ACTIONS.saveMessage(
-				errorProduct?.data?.message || errorProduct?.error
-			)
-		);
-		dispatch(AUTH_ACTIONS.logout());
+		dispatch(AUTH_ACTIONS.logout(messageProduct));
+	} else {
+		dispatch(ERROR_ACTIONS.saveMessage(messageProduct));
 	}
 
 	useEffect(() => {
 		reset();
 		//eslint-disable-next-line
-	}, [idProductSelected]);
+	}, [productIdSelected]);
+
 	return (
 		<Modal
 			{...props}
@@ -83,7 +79,6 @@ function ModalEditProduct(props) {
 					Edit Product
 				</Modal.Title>
 			</Modal.Header>
-			{/* Si no pones nada de estas condicionales no pasa nada pero lo hacemos mas que nada al obtener el producto y puede dar error */}
 			{isLoadingProduct ? (
 				<Loader />
 			) : isErrorProduct ? (
@@ -101,9 +96,7 @@ function ModalEditProduct(props) {
 					<Formik
 						validationSchema={schema}
 						onSubmit={async (values) => {
-							const token = localStorage.getItem("token")
-								? JSON.parse(localStorage.getItem("token"))
-								: "";
+							const token = JSON.parse(localStorage.getItem("token") ?? '""');
 							try {
 								await editProduct({
 									token,
@@ -111,18 +104,16 @@ function ModalEditProduct(props) {
 									newProduct: values,
 								}).unwrap();
 							} catch (err) {
+								const message = err?.data?.message || err?.error || err.message;
 								if (err.status === 401 || err.status === 403) {
-									dispatch(
-										ERROR_ACTIONS.saveMessage(
-											err?.data?.message || err?.error || err.message
-										)
-									);
-									dispatch(AUTH_ACTIONS.logout());
+									dispatch(AUTH_ACTIONS.logout(message));
+								} else {
+									dispatch(ERROR_ACTIONS.saveMessage(message));
 								}
 							}
 						}}
 						initialValues={product}
-						//Si el valor de initialValues cambia por algun cambio de estado, entonces con la propiedad debajo cambiara el estado del formulario
+						//This property allows the form to reinitialize with new initial values whenever those initial values change.  This is particularly useful in scenarios where the form needs to be dynamically updated based on changes in the application's state or props passed to the form.
 						enableReinitialize={true}
 					>
 						{({handleSubmit, handleChange, values, touched, errors}) => (

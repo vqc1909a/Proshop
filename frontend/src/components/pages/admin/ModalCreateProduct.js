@@ -9,8 +9,8 @@ import * as formik from "formik";
 import * as yup from "yup";
 
 //ACTIONS
-import * as ERROR_ACTIONS from "redux/slices/errorSlice";
 import * as AUTH_ACTIONS from "redux/slices/authSlice";
+import * as ERROR_ACTIONS from "redux/slices/errorSlice";
 
 // En el código que proporcionaste, touched.name y errors.name son propiedades relacionadas con el manejo de formularios en Formik.
 
@@ -22,7 +22,6 @@ import * as AUTH_ACTIONS from "redux/slices/authSlice";
 // noValidate es para que no me valide nada el propio navegador como el required en los campos especificados del componente <Form>
 
 function ModalCreateProduct(props) {
-	const {keynewmodal} = props;
 	const dispatch = useDispatch();
 	const {Formik} = formik;
 	const schema = yup.object().shape({
@@ -47,10 +46,11 @@ function ModalCreateProduct(props) {
 	const imagePreview = useRef();
 	const formCreateProduct = useRef();
 
+	//Clean All State of the createProduct mutation, i mean, clean the state error, data, isLoading, isSuccess, isError to its default value
 	useEffect(() => {
 		reset();
 		//eslint-disable-next-line
-	}, [keynewmodal]);
+	}, []);
 
 	return (
 		<Modal
@@ -74,26 +74,21 @@ function ModalCreateProduct(props) {
 				<Formik
 					validationSchema={schema}
 					onSubmit={async (values, {resetForm}) => {
-						const token = localStorage.getItem("token")
-							? JSON.parse(localStorage.getItem("token"))
-							: "";
+						const token = JSON.parse(localStorage.getItem("token") ?? '""');
 						try {
 							let formData = new FormData(formCreateProduct.current);
 							await createProduct({token, newProduct: formData}).unwrap();
 							imagePreview.current.innerHTML = "";
 							resetForm();
 						} catch (err) {
+							const message = err?.data?.message || err?.error || err.message;
 							if (err.status === 401 || err.status === 403) {
-								dispatch(
-									ERROR_ACTIONS.saveMessage(
-										err?.data?.message || err?.error || err.message
-									)
-								);
-								dispatch(AUTH_ACTIONS.logout());
+								dispatch(AUTH_ACTIONS.logout(message));
+							} else {
+								dispatch(ERROR_ACTIONS.saveMessage(message));
 							}
 						}
 					}}
-					// No es necesario crea un objet values xq con el reset te resetea a su valor inicial
 					initialValues={{
 						name: "",
 						image: "",
@@ -104,6 +99,7 @@ function ModalCreateProduct(props) {
 						countInStock: 0,
 					}}
 				>
+						{/* When noValidate is present, the browser's default validation for form inputs (like checking for required fields, correct email format in type="email" inputs, etc.) is bypassed, allowing the form to be submitted without undergoing these checks.  */}
 					{({handleSubmit, handleChange, values, touched, errors}) => (
 						<Form noValidate onSubmit={handleSubmit} ref={formCreateProduct}>
 							<Row className="mb-3">
@@ -131,6 +127,7 @@ function ModalCreateProduct(props) {
 										name="description"
 										value={values.description}
 										onChange={handleChange}
+										// touched is an object that keeps track of all the fields that have been visited or focused on in the form. Each key in the touched object
 										isValid={touched.description && !errors.description}
 										isInvalid={!!errors.description}
 									/>
@@ -152,6 +149,9 @@ function ModalCreateProduct(props) {
 												// Creamos una nueva instancia de FileReader, que nos permitirá leer el contenido del archivo seleccionado
 												const reader = new FileReader();
 
+												//Iniciamos la lectura del contenido del archivo seleccionado como una URL de datos (Data URL). Esto hace que el FileReader lea el contenido del archivo y dispare el evento "load" cuando la lectura se complete
+												reader.readAsDataURL(file);
+
 												reader.addEventListener("load", function () {
 													const image = document.createElement("img");
 													// reader.result contiene una URL de datos (Data URL) que representa el contenido del archivo.
@@ -162,9 +162,6 @@ function ModalCreateProduct(props) {
 													imagePreview.current.innerHTML = "";
 													imagePreview.current.appendChild(image);
 												});
-
-												//Iniciamos la lectura del contenido del archivo seleccionado como una URL de datos (Data URL). Esto hace que el FileReader lea el contenido del archivo y dispare el evento "load" cuando la lectura se complete
-												reader.readAsDataURL(file);
 											}
 											handleChange(e);
 										}}
