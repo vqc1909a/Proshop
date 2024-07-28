@@ -14,10 +14,7 @@ import * as CART_SELECTORS from "redux/selectors/cartSelector";
 function Payment() { 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  
-  //Este selector lo pongo aqui por el hecho de que estamos manejando el guardado del payemnt solo en memoria, si fuera de base de datos iria debajo como normalmente hariamos
-  const paymentMethod = useSelector(CART_SELECTORS.selectPaymentMethod);  
-  const [methodPayment, setMethodPayment] = useState(paymentMethod);
+  const [methodPayment, setMethodPayment] = useState("Paypal");
   const { setNumberStep  } = useOutletContext();
 
   //SELECTORS
@@ -55,7 +52,7 @@ function Payment() {
                       checked={methodPayment === "Paypal"}
                       onChange={(e) => setMethodPayment(e.target.value)}
                   ></Form.Check>
-                  {/* <Form.Check
+                  <Form.Check
                       type="radio"
                       label="Mercado Pago"
                       id="Mercado Pago"
@@ -63,7 +60,7 @@ function Payment() {
                       value="Mercado Pago"
                       checked={methodPayment === "Mercado Pago"}
                       onChange={(e) => setMethodPayment(e.target.value)}
-                  ></Form.Check> */}
+                  ></Form.Check>
                 </Col>
             </Form.Group>
             <Button type="submit" variant="primary">Continue</Button>

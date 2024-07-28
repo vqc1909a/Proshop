@@ -73,9 +73,7 @@ function ModalCreateUser(props) {
 						} else {
 							newValues["isAdmin"] = false;
 						}
-						const token = localStorage.getItem("token")
-							? JSON.parse(localStorage.getItem("token"))
-							: "";
+						const token = JSON.parse(localStorage.getItem("token") ?? '""');
 						try {
 							await createUser({token, newUser: newValues}).unwrap();
 							resetForm();

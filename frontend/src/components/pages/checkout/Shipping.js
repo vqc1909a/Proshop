@@ -71,7 +71,7 @@ function Shipping() {
 
 	const handleSubmitAddShippingAddress = async (e, shippingAddress) => {
 		e.preventDefault();
-		const token = JSON.parse(localStorage.getItem("token"));
+		const token = JSON.parse(localStorage.getItem("token") ?? '""');
 		try {
 			const shippingAddresses = await addShippingAddress({
 				token,
@@ -87,10 +87,6 @@ function Shipping() {
 				dispatch(ERROR_ACTIONS.saveMessage(message));
 			}
 		}
-	};
-
-	const handleSelectedShipping = (e, shipping) => {
-		setIdSelectedShipping(shipping.id);
 	};
 
 	//El tiempo del debounce es que ejeuctara la funcion que envuelve despues de 500ms desde su ultimo llamado
@@ -117,7 +113,7 @@ function Shipping() {
 				}
 			}
 		},
-		300
+		500
 	);
 
 	const handleContinuePage = async () => {
@@ -125,7 +121,7 @@ function Shipping() {
 		navigate("/checkout/payment");
 	};
 
-	// Asignar el shippingAddress con estado true
+	// Asignar el shippingAddress con estado true al cart y cada vez que cargamos la página asignar el id del shipping seleccionado en DB
 	useEffect(() => {
 		if (!shippingAddresses.length) return;
 
@@ -140,9 +136,6 @@ function Shipping() {
 		//eslint-disable-next-line
 	}, [shippingAddresses]);
 
-	console.log({
-		shippingAddresses,
-	});
 	return (
 		<>
 			{isErrorChange && (
@@ -155,7 +148,7 @@ function Shipping() {
 			)}
 			<h1>Shipping Addresses</h1>
 			{
-				//ESto para que no me muestre momentaneamente el "No tienes direcciones...", tenemos que esperar que cargue la petición para mostgrar ese mensjae o lo otro
+				//ESto para que no me muestre momentaneamente el "No tienes direcciones...", tenemos que esperar que cargue la petición para mostgrar ese mensjae
 				!shippingAddresses.length ? (
 					<Card.Title>No tienes direcciones de envío registradas</Card.Title>
 				) : (
@@ -172,7 +165,7 @@ function Shipping() {
 										value={shipping.id}
 										label={shipping.address}
 										checked={idSelectedShipping === shipping.id}
-										onChange={(e) => handleSelectedShipping(e, shipping)}
+										onChange={(e) => setIdSelectedShipping(shipping.id)}
 									/>
 								))}
 							</>

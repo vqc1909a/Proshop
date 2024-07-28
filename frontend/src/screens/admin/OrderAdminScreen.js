@@ -3,7 +3,7 @@ import Message from "components/Message";
 import Loader from "components/Loader";
 import {useGetAllOrdersQuery} from "apis/orderApi";
 import {Link, useLocation} from "react-router-dom";
-import * as ERROR_ACTIONS from "redux/slices/errorSlice";
+// import * as ERROR_ACTIONS from "redux/slices/errorSlice";
 import * as AUTH_ACTIONS from "redux/slices/authSlice";
 import {useDispatch} from "react-redux";
 import Paginate from "components/Paginate";
@@ -17,9 +17,7 @@ function OrderListScreen() {
 	let page = Number(query.get("page")) || 1;
 
 	const dispatch = useDispatch();
-	const token = localStorage.getItem("token")
-		? JSON.parse(localStorage.getItem("token"))
-		: "";
+	const token = JSON.parse(localStorage.getItem("token") || '""');
 	const {isError, isLoading, data, error} = useGetAllOrdersQuery({token, page});
 	let orders = data?.body?.orders || [];
 	let totalPages = data?.body?.totalPages || 0;
@@ -27,8 +25,7 @@ function OrderListScreen() {
 
 	//Solo para peticiones get que necesiten de un token para autenticación
 	if (error?.status === 401 || error?.status === 403) {
-		dispatch(ERROR_ACTIONS.saveMessage(error?.data?.message || error?.error));
-		dispatch(AUTH_ACTIONS.logout());
+		dispatch(AUTH_ACTIONS.logout(error?.data?.message || error?.error));
 	}
 
 	return (

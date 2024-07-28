@@ -30,9 +30,7 @@ function UserAdminScreen() {
 	let query = useQuery();
 	let page = Number(query.get("page")) || 1;
 
-	const token = localStorage.getItem("token")
-		? JSON.parse(localStorage.getItem("token"))
-		: "";
+	const token = JSON.parse(localStorage.getItem("token") ?? "''");
 	const {isError, isLoading, data, error /* refetch */} = useGetUsersQuery({
 		token,
 		page,
@@ -40,8 +38,7 @@ function UserAdminScreen() {
 
 	//Solo para peticiones get que necesiten de un token para autenticación
 	if (error?.status === 401 || error?.status === 403) {
-		dispatch(ERROR_ACTIONS.saveMessage(error?.data?.message || error?.error));
-		dispatch(AUTH_ACTIONS.logout());
+		dispatch(AUTH_ACTIONS.logout(error?.data?.message || error?.error));
 	}
 
 	let users = data?.body.users || [];
@@ -75,9 +72,7 @@ function UserAdminScreen() {
 			confirmButtonText: "Si, eliminar!",
 		}).then(async (result) => {
 			if (result.isConfirmed) {
-				const token = localStorage.getItem("token")
-					? JSON.parse(localStorage.getItem("token"))
-					: "";
+				const token = JSON.parse(localStorage.getItem("token") ?? "''");
 				try {
 					const data = await deleteUser({token, userId}).unwrap();
 					Swal.fire("Eliminado!", data.message, "success");

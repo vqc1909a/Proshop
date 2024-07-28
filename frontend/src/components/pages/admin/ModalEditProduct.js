@@ -43,8 +43,7 @@ function ModalEditProduct(props) {
 			.required("El stock es requerido"),
 	});
 
-	const [editProduct, {isError, isSuccess, isLoading, error, data, reset}] =
-		useEditProductMutation();
+	const [editProduct, {isError, isSuccess, isLoading, error, data, reset}] = useEditProductMutation();
 
 	const {
 		data: dataProduct,

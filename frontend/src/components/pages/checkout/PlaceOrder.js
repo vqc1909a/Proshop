@@ -34,7 +34,7 @@ function PlaceOrder() {
 	const handlePlaceOrder = async (e) => {
 		e.preventDefault();
 		try {
-			const token = JSON.parse(localStorage.getItem("token"));
+			const token = JSON.parse(localStorage.getItem("token") || '""');
 			const order = {
 				items,
 				itemsPrice,

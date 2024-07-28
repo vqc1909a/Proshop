@@ -41,8 +41,7 @@ function ModalCreateProduct(props) {
 			.required("El stock es requerido"),
 	});
 
-	const [createProduct, {isError, isSuccess, isLoading, error, data, reset}] =
-		useCreateProductMutation();
+	const [createProduct, {isError, isSuccess, isLoading, error, data, reset}] = useCreateProductMutation();
 	const imagePreview = useRef();
 	const formCreateProduct = useRef();
 

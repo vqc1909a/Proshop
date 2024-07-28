@@ -23,10 +23,7 @@ import Loader from "components/Loader";
 // noValidate es para que no me valide nada el propio navegador como el required en los campos especificados del componente <Form>
 
 function ModalEditUser(props) {
-	const token = localStorage.getItem("token")
-		? JSON.parse(localStorage.getItem("token"))
-		: "";
-
+	const token = JSON.parse(localStorage.getItem("token") ?? '""');
 	const {userIdSelected} = props;
 	const dispatch = useDispatch();
 	const {Formik} = formik;
@@ -55,10 +52,7 @@ function ModalEditUser(props) {
 
 	//Solo para peticiones get que necesiten de un token para autenticación
 	if (errorUser?.status === 401 || errorUser?.status === 403) {
-		dispatch(
-			ERROR_ACTIONS.saveMessage(errorUser?.data?.message || errorUser?.error)
-		);
-		dispatch(AUTH_ACTIONS.logout());
+		dispatch(AUTH_ACTIONS.logout(errorUser?.data?.message || errorUser?.error));
 	}
 
 	useEffect(() => {
@@ -93,9 +87,7 @@ function ModalEditUser(props) {
 					<Formik
 						validationSchema={schema}
 						onSubmit={async (values) => {
-							const token = localStorage.getItem("token")
-								? JSON.parse(localStorage.getItem("token"))
-								: "";
+							const token = JSON.parse(localStorage.getItem("token") ?? '""');
 							try {
 								await editUser({
 									token,

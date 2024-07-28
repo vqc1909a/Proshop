@@ -12,6 +12,9 @@ function CheckoutScreen() {
   const [numberStep, setNumberStep] = useState(1);
 
   let items = useSelector(CART_SELECTORS.selectItems);
+  // let shippingAddress = useSelector(CART_SELECTORS.selectShippingAddress);
+  // let paymentMethod = useSelector(CART_SELECTORS.selectPaymentMethod);
+
   if(!items.length){
     return <Navigate to="/cart" replace={true}></Navigate>
   }

@@ -1,7 +1,7 @@
 import {createSlice} from "@reduxjs/toolkit";
 
 const items = JSON.parse(localStorage.getItem("cartItems") ?? '[]');
-const paymentMethod = JSON.parse(localStorage.getItem("paymentMethod") ?? '"Paypal"');
+const paymentMethod = JSON.parse(localStorage.getItem("paymentMethod") ?? '""');
 const shippingAddress = JSON.parse(localStorage.getItem("shippingAddress") ?? '{}');
 
 const qtyItems = items.reduce((acc, item) => acc + item.qty, 0);
@@ -59,6 +59,7 @@ const cartSlice = createSlice({
         },
         saveShippingAddress(state, action){
             const shippingAddress = action.payload;
+            //Aqui evalua el shippingAddress del carrito y esto siempre va a llamar siempre que haya una dirección seleccionada, o sea que si o si existe el shippingAddress
             if(!state.shippingAddress){
                 state.totalPrice = state.totalPrice + (state.shippingAddress?.regionId?.shippingPrice || 0);
             }else{
@@ -75,9 +76,12 @@ const cartSlice = createSlice({
             state.paymentMethod = paymentMethod;
             localStorage.setItem("paymentMethod", JSON.stringify(state.paymentMethod));
         },
+        //Se queda toda la info del carrito de compras nada más
         resetFieldsByLogout(state, action){
             state.shippingAddress = {};
             state.paymentMethod = "Paypal";
+            localStorage.removeItem("paymentMethod");
+            localStorage.removeItem("shippingAddress");
         },
         clearCart(state, action){
             state.items = [];

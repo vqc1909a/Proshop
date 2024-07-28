@@ -37,20 +37,17 @@ function ProductAdminScreen() {
 	let query = useQuery();
 	let page = Number(query.get("page")) || 1;
 
-	const token = localStorage.getItem("token")
-		? JSON.parse(localStorage.getItem("token"))
-		: "";
-	const {isError, isLoading, data, error /* refetch */} =
-		useGetProductsAdminQuery({token, page});
+	const token = JSON.parse(localStorage.getItem("token") || '""');
+	const {isError, isLoading, data, error /* refetch */} = useGetProductsAdminQuery({token, page});
 	let products = data?.body?.products || [];
 	let totalPages = data?.body?.totalPages || 0;
 	let pageNow = data?.body?.page || 1;
 
 	//Solo para peticiones get que necesiten de un token para autenticación
 	if (error?.status === 401 || error?.status === 403) {
-		dispatch(ERROR_ACTIONS.saveMessage(error?.data?.message || error?.error));
-		dispatch(AUTH_ACTIONS.logout());
+		dispatch(AUTH_ACTIONS.logout(error?.data?.message || error?.error));
 	}
+
 	const [modalCreateProduct, setModalCreateProduct] = useState(false);
 	const [modalEditProduct, setModalEditProduct] = useState(false);
 	const [modalEditImageProduct, setModalEditImageProduct] = useState(false);
@@ -218,16 +215,14 @@ function ProductAdminScreen() {
 							))}
 						</tbody>
 					</Table>
+					<Paginate
+						pathname="/admin/products"
+						totalPages={totalPages}
+						page={pageNow}
+					></Paginate>
 				</>
 			) : (
 				<h3>No Products</h3>
-			)}
-			{products.length > 0 && (
-				<Paginate
-					pathname="/admin/products"
-					totalPages={totalPages}
-					page={pageNow}
-				></Paginate>
 			)}
 		</>
 	);

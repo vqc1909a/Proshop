@@ -4,7 +4,6 @@ import Loader from "components/Loader";
 import {Row, Table} from "react-bootstrap";
 import {Link, useLocation} from "react-router-dom";
 import {useDispatch} from "react-redux";
-import * as ERROR_ACTIONS from "redux/slices/errorSlice";
 import * as AUTH_ACTIONS from "redux/slices/authSlice";
 import Paginate from "components/Paginate";
 
@@ -24,8 +23,7 @@ function Orders() {
 
 	//Solo para peticiones get que necesiten de un token para autenticación
 	if (error?.status === 401 || error?.status === 403) {
-		dispatch(ERROR_ACTIONS.saveMessage(error?.data?.message || error?.error));
-		dispatch(AUTH_ACTIONS.logout());
+		dispatch(AUTH_ACTIONS.logout(error?.data?.message || error?.error));
 	}
 
 	return (

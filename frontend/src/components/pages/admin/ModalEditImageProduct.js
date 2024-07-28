@@ -26,7 +26,7 @@ import Loader from "components/Loader";
 // noValidate es para que no me valide nada el propio navegador como el required en los campos especificados del componente <Form>
 
 function ModalEditImageProduct(props) {
-	const token = JSON.parse(localStorage.getItem("token") || '""');
+	const token = JSON.parse(localStorage.getItem("token") ?? '""');
 	const {productIdSelected} = props;
 	const dispatch = useDispatch();
 	const {Formik} = formik;

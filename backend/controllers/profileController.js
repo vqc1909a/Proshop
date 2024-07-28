@@ -122,20 +122,27 @@ export const addShippingAddress = asyncHandler(async (req, res) => {
 // @route POST /api/profile/change-selected-shipping-address
 // @access Private
 export const changeSelectedShippingAddress = asyncHandler(async (req, res) => {
-    const user = req.user;
-    const idSelectedShippingAddress = req.body.idSelectedShippingAddress;
+	//No es necesario hacer un populate "shippingAddresses.regionId" aqui xq esto necesita al menos una dirección añadida, y esa dirección añadida ya hace el populate
+	const user = req.user;
+	const idSelectedShippingAddress = req.body.idSelectedShippingAddress;
 
-    user.shippingAddresses.forEach(shipping => {
-      //DEseleccionar el anterior
-      if(shipping.isSelected){
-        shipping.isSelected = false;
-      }
-      //Seleccionar el nuevo
-      if(shipping._id.toString() === idSelectedShippingAddress.toString()){
-        shipping.isSelected = true;
-      }
-    });
-    await user.save();
+	user.shippingAddresses.forEach((shipping) => {
+		//DEseleccionar el anterior
+		if (shipping.isSelected) {
+			shipping.isSelected = false;
+		}
+		//Seleccionar el nuevo
+		if (shipping._id.toString() === idSelectedShippingAddress.toString()) {
+			shipping.isSelected = true;
+		}
+	});
+	await user.save();
 
-    return res.status(200).json({body: user.shippingAddresses, message: "Shipping Address cambiado correctamente"});
+  //aqui devolvemos el user.shippingAddresses donde el populate ya esta configurado y no devolvemos el usuario guardado xq no tendra el populate
+	return res
+		.status(200)
+		.json({
+			body: user.shippingAddresses,
+			message: "Shipping Address cambiado correctamente",
+		});
 });
