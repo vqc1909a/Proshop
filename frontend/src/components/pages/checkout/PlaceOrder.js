@@ -76,8 +76,9 @@ function PlaceOrder() {
 						<h2>Shipping</h2>
 						<p>
 							<strong>Address: </strong>
-							{shippingAddress.address}, {shippingAddress.city}{" "}
-							{shippingAddress.postalCode}, {shippingAddress.country}
+							{shippingAddress?.address}, {shippingAddress?.regionId?.city}{" "}
+							{shippingAddress?.regionId?.postalCode},{" "}
+							{shippingAddress?.regionId?.country}
 						</p>
 					</ListGroup.Item>
 

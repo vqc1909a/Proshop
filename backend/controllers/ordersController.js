@@ -66,7 +66,6 @@ export const getMyOrders = asyncHandler(async (req, res) => {
     orders = await Order.find({userId: req.user._id});
     totalOrders = orders.length;
     totalPages = Math.ceil(totalOrders/ordersByPage);
-    orders = await 
     
     
     Order.find({userId: req.user._id}).sort({ createdAt: -1 }).limit(ordersByPage).skip(ordersByPage * (page - 1));
@@ -88,10 +87,6 @@ export const getOrderById = asyncHandler(async (req, res) => {
 
     let isAdmin = req.user.isAdmin;
     let isOrderLoggedUser = (order.userId._id.toString() === req.user._id.toString());
-    console.log({
-        isAdmin,
-        isOrderLoggedUser
-    })
     //Solo si soy un usuario normal verifico que el order sea mio y no de otra persona
     if(!isAdmin){
         if(!isOrderLoggedUser){
@@ -117,7 +112,7 @@ export const updateOrderToPaid = asyncHandler(async (req, res) => {
     }
     order.isPaid = true;
     order.paidAt = Date.now();
-    //ESto es el objeto que me devuelve luego de que me haya creado el order en paypal
+    //ESto es el objeto que me devuelve luego de que me haya creado el order en paypal => orderDetails
     // {
     //     "id": "5E116064HJ739660U",
     //     "intent": "CAPTURE",

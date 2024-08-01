@@ -22,14 +22,12 @@ import Meta from "components/Meta";
 
 function OrderScreen() {
 	const dispatch = useDispatch();
-	const token = localStorage.getItem("token")
-		? JSON.parse(localStorage.getItem("token"))
-		: "";
+	const token = JSON.parse(localStorage.getItem("token") ?? '""');
 	const {id: orderId} = useParams();
 
 	const isAdmin = useSelector(AUTH_SELECTORS.selectIsAdmin);
 	//Querys
-	//El refetch hara que el data se actualice automaticamente luego de hacer la mutación en otros hooks, solo el valor de data , este refetch lo podemos omitir gracias a los tags definidaos en los apiSlice, basicamente el reftch hace otra petición para en este caso obtener el order
+	//El refetch hara que el data se actualice automaticamente luego de hacer la mutación en otros hooks, solo el valor de data, este refetch lo podemos omitir gracias a los tags definidaos en los apiSlice, basicamente el reftch hace otra petición para en este caso obtener el order
 	const {
 		isError: isErrorGetOrder,
 		isLoading: isLoadingGetOrder,
@@ -40,12 +38,9 @@ function OrderScreen() {
 
 	//Solo para peticiones get que necesiten de un token para autenticación
 	if (errorGetOrder?.status === 401 || errorGetOrder?.status === 403) {
-		dispatch(
-			ERROR_ACTIONS.saveMessage(
-				errorGetOrder?.data?.message || errorGetOrder?.error
-			)
-		);
-		dispatch(AUTH_ACTIONS.logout());
+		dispatch(AUTH_ACTIONS.logout(errorGetOrder?.data?.message || errorGetOrder?.error));
+	}else{
+		dispatch(ERROR_ACTIONS.saveMessage(errorGetOrder?.data?.message || errorGetOrder?.error));
 	}
 
 	const {
@@ -54,6 +49,7 @@ function OrderScreen() {
 		error: errorClientId,
 	} = useGetPayPalClientIdQuery();
 	const clientId = payPalClientId?.clientId;
+
 	const [
 		deliverOrder,
 		{
@@ -168,7 +164,7 @@ function OrderScreen() {
 						orderDetails,
 					});
 					//Ya sea que hayas pagado con tu cuenta de paypal o con una tarjeta de debiot o credito, este objeto te creara con los datos brindados ya sea de la primera o segunda forma
-
+					//CON CUENTA DE PAYPAL:
 					// {
 					//     "id": "5E116064HJ739660U",
 					//     "intent": "CAPTURE",
@@ -236,6 +232,80 @@ function OrderScreen() {
 					//         }
 					//     ]
 					// }
+
+					//CON TARJETA DE DEBITO O CREDITO:
+					// 	{
+					// 		"id": "20152773AJ8432411",
+					// 		"intent": "CAPTURE",
+					// 		"status": "COMPLETED",
+					// 		"purchase_units": [
+					// 				{
+					// 						"reference_id": "default",
+					// 						"amount": {
+					// 								"currency_code": "USD",
+					// 								"value": "158.99"
+					// 						},
+					// 						"payee": {
+					// 								"email_address": "sb-qxat22874089@business.example.com",
+					// 								"merchant_id": "32QUM3UVW6ZDA"
+					// 						},
+					// 						"soft_descriptor": "PAYPAL *JOHNDOESTES",
+					// 						"shipping": {
+					// 								"name": {
+					// 										"full_name": "Victor Cesar Quispe Atencio"
+					// 								},
+					// 								"address": {
+					// 										"address_line_1": "Calle Paseo Los Vencedores Mz. I Lt.4 AA.HH \"Vista Alegre\"",
+					// 										"admin_area_2": "Pasco",
+					// 										"admin_area_1": "Pasco",
+					// 										"postal_code": "19001",
+					// 										"country_code": "PE"
+					// 								}
+					// 						},
+					// 						"payments": {
+					// 								"captures": [
+					// 										{
+					// 												"id": "75B679381H226391W",
+					// 												"status": "PENDING",
+					// 												"status_details": {
+					// 														"reason": "UNILATERAL"
+					// 												},
+					// 												"amount": {
+					// 														"currency_code": "USD",
+					// 														"value": "158.99"
+					// 												},
+					// 												"final_capture": true,
+					// 												"seller_protection": {
+					// 														"status": "NOT_ELIGIBLE"
+					// 												},
+					// 												"create_time": "2024-08-01T08:07:34Z",
+					// 												"update_time": "2024-08-01T08:07:34Z"
+					// 										}
+					// 								]
+					// 						}
+					// 				}
+					// 		],
+					// 		"payer": {
+					// 				"name": {
+					// 						"given_name": "Victor Cesar",
+					// 						"surname": "Quispe Atencio"
+					// 				},
+					// 				"email_address": "vqc1909a@gmail.com",
+					// 				"payer_id": "MA7PYLRSLL866",
+					// 				"address": {
+					// 						"country_code": "PE"
+					// 				}
+					// 		},
+					// 		"create_time": "2024-08-01T07:42:56Z",
+					// 		"update_time": "2024-08-01T08:07:34Z",
+					// 		"links": [
+					// 				{
+					// 						"href": "https://api.sandbox.paypal.com/v2/checkout/orders/20152773AJ8432411",
+					// 						"rel": "self",
+					// 						"method": "GET"
+					// 				}
+					// 		]
+					// }
 					try {
 						await payOrder({token, orderId, orderDetails}).unwrap();
 						//Se vuelve a refrescar la petición del order para tener la data actualizada para visualizar que ahora si esta pagado el order
@@ -284,6 +354,7 @@ function OrderScreen() {
 			}
 		}
 	};
+
 	useEffect(() => {
 		//Verificamos que tanto el order como el clientId existan
 		if (!Object.keys(order).length || !clientId) return;
@@ -294,6 +365,8 @@ function OrderScreen() {
 				type: "resetOptions",
 				value: {
 					//Sin el client Id no te cargara tu sdk o sea no te cargara ninguna UI, el id test es lo mismo que tu id de la aplicación en tu cuenta de desarrollador, para pasar a producción ahi mismo te da las indicaciones para pasr tu cuenta a cuenta comercial
+
+					//Este id corresponde a la cuenta de vendedor o business que tienes en tu cuenta del sandbox de paypal
 					"client-id": clientId,
 					currency: "USD",
 				},
@@ -452,18 +525,17 @@ function OrderScreen() {
 											{/* <Button className="mb-3" onClick={onApproveTest}>Test Pay Order</Button> */}
 											<div>
 												{/* 
-                                                createBillingAgreement: Called on button click. Often used for Braintree vault integrations.
-                                                createSubscription: Se llama al hacer clic en el botón para configurar un pago recurrente. o bien pasas createSubscription o createOrder pero no ambos
-                                                createOrder: Called on button click to set up a one-time payment. 
-                                                onApprove: Called when finalizing the transaction. Often used to inform the buyer that the transaction is complete.  
-                                                onCancel: Called when the buyer cancels the transaction. Often used to show the buyer a cancellation page. Ocurre cuando cancelamos la transaccion en la UI de Paypal
-                                                onClick: Called when the button is clicked. Often used for validation.
-                                                onInit: Called when the buttons are initialized. The component is initialized after the iframe has successfully loaded.
-                                                onShippingChange: Called when the buyer changes their shipping address on PayPal, se ejcuta cuando cambias la direccion en la UI de Paypal en vivo
-                                                */}
+												createBillingAgreement: Called on button click. Often used for Braintree vault integrations.
+												createSubscription: Se llama al hacer clic en el botón para configurar un pago recurrente. o bien pasas createSubscription o createOrder pero no ambos
+												createOrder: Called on button click to set up a one-time payment. 
+												onApprove: Called when finalizing the transaction. Often used to inform the buyer that the transaction is complete.  
+												onCancel: Called when the buyer cancels the transaction. Often used to show the buyer a cancellation page. Ocurre cuando cancelamos la transaccion en la UI de Paypal
+												onClick: Called when the button is clicked. Often used for validation.
+												onInit: Called when the buttons are initialized. The component is initialized after the iframe has successfully loaded.
+												onShippingChange: Called when the buyer changes their shipping address on PayPal, se ejcuta cuando cambias la direccion en la UI de Paypal en vivo
+												*/}
 												<PayPalButtons
 													//Ocurre cuando en la UI de Paypal le das al boton de pagar luego de elegir tu metodo de pago en el mismo paypal (VISA O SALDO DEL MIMSO PAYLPAL)PalButtons
-													//Ocurre cuando en la UI de Paypal le das al boton de pagar luego de elegir tu metodo de pago en el mismo paypal (VISA O SALDO DEL MIMSO PAYLPAL)
 													createOrder={createOrder}
 													onApprove={onApprove}
 													onError={onError}

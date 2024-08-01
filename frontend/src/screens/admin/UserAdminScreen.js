@@ -39,6 +39,8 @@ function UserAdminScreen() {
 	//Solo para peticiones get que necesiten de un token para autenticación
 	if (error?.status === 401 || error?.status === 403) {
 		dispatch(AUTH_ACTIONS.logout(error?.data?.message || error?.error));
+	}else{
+		dispatch(ERROR_ACTIONS.saveMessage(error?.data?.message || error?.error));
 	}
 
 	let users = data?.body.users || [];

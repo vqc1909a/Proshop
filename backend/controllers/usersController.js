@@ -31,7 +31,6 @@ export const getUsers = asyncHandler( async(req, res) => {
         totalUsers = users.length;
         totalPages = Math.ceil(totalUsers / usersByPage)
         users =  await User.find({_id: {$ne: useSuperAdmin._id}}).select("-password -shippingAddresses").sort({ createdAt: -1 }).limit(usersByPage).skip(usersByPage * (page - 1));
-
     }
     return res.status(200).json({body: {
         users,

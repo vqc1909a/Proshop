@@ -5,6 +5,8 @@ import {useGetAllOrdersQuery} from "apis/orderApi";
 import {Link, useLocation} from "react-router-dom";
 // import * as ERROR_ACTIONS from "redux/slices/errorSlice";
 import * as AUTH_ACTIONS from "redux/slices/authSlice";
+import * as ERROR_ACTIONS from "redux/slices/errorSlice";
+
 import {useDispatch} from "react-redux";
 import Paginate from "components/Paginate";
 import Meta from "components/Meta";
@@ -26,7 +28,10 @@ function OrderListScreen() {
 	//Solo para peticiones get que necesiten de un token para autenticación
 	if (error?.status === 401 || error?.status === 403) {
 		dispatch(AUTH_ACTIONS.logout(error?.data?.message || error?.error));
+	} else {
+		dispatch(ERROR_ACTIONS.saveMessage(error?.data?.message || error?.error));
 	}
+
 
 	return (
 		<>
