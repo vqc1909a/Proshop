@@ -45,6 +45,10 @@ function PlaceOrder() {
 				totalPrice,
 			};
 			const createdOrder = await saveOrder({token, order}).unwrap();
+			console.log({
+				createdOrder,
+				orders: `/orders/${createdOrder?.body?.id}`
+			})
 			navigate(`/orders/${createdOrder?.body?.id}`);
 			dispatch(CART_ACTIONS.clearCart());
 		} catch (err) {

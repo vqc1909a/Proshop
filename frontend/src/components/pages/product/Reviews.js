@@ -13,6 +13,9 @@ const Reviews = ({productId, refetchProduct}) => {
 		error: errorReviews,
 	} = useGetReviewsByProductQuery({productId});
 	const reviews = dataReviews?.body?.reviews || [];
+	console.log({
+		reviews
+	})
 	return (
 		<Row className="review">
 			<Col md={6}>

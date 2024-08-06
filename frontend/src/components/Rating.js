@@ -3,6 +3,7 @@ import {OverlayTrigger, Tooltip} from "react-bootstrap";
 import PropTypes from "prop-types";
 
 export const Rating = ({rating, color = "#f8e825"}) => {
+	
 	return (
 		<OverlayTrigger
 			key={"top"}

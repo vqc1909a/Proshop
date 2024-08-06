@@ -14,6 +14,9 @@ function RatingProduct({productId}) {
 	} = useGetReviewsByProductQuery({productId: productId});
 
 	const rating = dataReviews?.body?.rating || 0;
+	console.log({
+		rating
+	})
 	const countReviews = dataReviews?.body?.countReviews || 0;
 
 	return (
@@ -36,7 +39,6 @@ function RatingProduct({productId}) {
 
 RatingProduct.propTypes = {
 	productId: PropTypes.string.isRequired,
-	color: PropTypes.string,
 };
 
 export default RatingProduct;

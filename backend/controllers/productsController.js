@@ -352,9 +352,7 @@ export const getReviewsByProduct = asyncHandler(async (req, res) => {
 	const countReviews = reviews.length;
 	const rating =
 		countReviews > 0
-			? parseFloat(
-					reviews.reduce((acc, review) => acc + review.rating, 0) / countReviews
-			  ).toFixed(2)
+			? parseFloat((reviews.reduce((acc, review) => acc + review.rating, 0) / countReviews).toFixed(2))
 			: 0;
 	return res.status(200).json({
 		body: {
