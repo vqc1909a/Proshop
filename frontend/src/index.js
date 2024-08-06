@@ -27,7 +27,8 @@ import Fallback from "components/layouts/Fallback";
 //     intent: "capture",
 // };
 
-ReactDOM.render(
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(
 	<React.StrictMode>
 		<Provider store={store}>
 			{/*
