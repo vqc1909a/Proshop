@@ -3,7 +3,7 @@ import * as CART_ACTIONS from "./cartSlice";
 import * as ERROR_ACTIONS from "./errorSlice";
 
 
-const token = localStorage.getItem("token") ? JSON.parse(localStorage.getItem("token")) : "";
+const token = JSON.parse(localStorage.getItem("token") ?? '""');
 const isLogged = token ? true : false;
 
 //Primero se ejecuta esto, luego lo de abajo. Si no harías esto, simplemente pasas lo de abajo dentro de reducers

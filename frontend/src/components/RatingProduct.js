@@ -14,9 +14,6 @@ function RatingProduct({productId}) {
 	} = useGetReviewsByProductQuery({productId: productId});
 
 	const rating = dataReviews?.body?.rating || 0;
-	console.log({
-		rating
-	})
 	const countReviews = dataReviews?.body?.countReviews || 0;
 
 	return (

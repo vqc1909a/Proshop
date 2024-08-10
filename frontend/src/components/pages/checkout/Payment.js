@@ -19,6 +19,7 @@ function Payment() {
 
   //SELECTORS
   const shippingAddress = useSelector(CART_SELECTORS.selectShippingAddress);
+	const items = useSelector(CART_SELECTORS.selectItems);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -33,6 +34,9 @@ function Payment() {
     //eslint-disable-next-line
   },[])
 
+  if (!items.length) {
+		return <Navigate to="/cart" replace={true}></Navigate>;
+	}
   if(!Object.keys(shippingAddress).length){
     return <Navigate to="shipping-address" replace={true} />
   }

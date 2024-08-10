@@ -66,6 +66,10 @@ function PlaceOrder() {
 		//eslint-disable-next-line
 	}, []);
 
+	if (!items.length) {
+		return <Navigate to="/cart" replace={true}></Navigate>;
+	}
+
 	if (!Object.keys(shippingAddress).length) {
 		return <Navigate to="shipping-address" replace={true} />;
 	}

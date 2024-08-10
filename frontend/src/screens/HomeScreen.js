@@ -11,9 +11,6 @@ import Meta from "components/Meta";
 
 function HomeScreen() {
 	const location = useLocation();
-	console.log({
-		location
-	})
 	const useQuery = () => new URLSearchParams(location.search);
 
 	let query = useQuery();

@@ -1,23 +1,18 @@
 import React, {useState} from 'react'
-import { useSelector } from "react-redux";
-import {Navigate, Outlet} from "react-router-dom"
+import {Outlet} from "react-router-dom"
 import FormContainer from 'components/hocs/FormContainer'
 import CheckoutSteps from 'components/CheckoutSteps'
 
 //Selectors
-import * as CART_SELECTORS from "redux/selectors/cartSelector";
 import Meta from 'components/Meta';
 
 function CheckoutScreen() {
   const [numberStep, setNumberStep] = useState(1);
 
-  let items = useSelector(CART_SELECTORS.selectItems);
-  // let shippingAddress = useSelector(CART_SELECTORS.selectShippingAddress);
-  // let paymentMethod = useSelector(CART_SELECTORS.selectPaymentMethod);
-
-  if(!items.length){
-    return <Navigate to="/cart" replace={true}></Navigate>
-  }
+  //Aqui no debe ir ninguna redirección porque abarca varias paginas del checkout
+  // if(!items.length){
+  //   return <Navigate to="/cart" replace={true}></Navigate>
+  // }
   return (
     <>
       <Meta title={`Checkout`}></Meta>

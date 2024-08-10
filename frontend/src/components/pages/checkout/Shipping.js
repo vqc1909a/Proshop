@@ -3,7 +3,7 @@ import {Button, Card, Form, Spinner} from "react-bootstrap";
 import debounce from "just-debounce-it";
 import useForm from "utils/hooks/useForm";
 import {useDispatch, useSelector} from "react-redux";
-import {useNavigate, useOutletContext} from "react-router-dom";
+import {Navigate, useNavigate, useOutletContext} from "react-router-dom";
 import Loader from "components/Loader";
 
 //Actions
@@ -15,6 +15,7 @@ import * as CART_ACTIONS from "redux/slices/cartSlice";
 
 //Selectors
 import * as AUTH_SELECTORS from "redux/selectors/authSelector";
+import * as CART_SELECTORS from "redux/selectors/cartSelector";
 
 //Services
 import {
@@ -37,6 +38,7 @@ function Shipping() {
 	const {setNumberStep} = useOutletContext();
 
 	const shippingAddresses = useSelector(AUTH_SELECTORS.selectShippingAdresses);
+	const items = useSelector(CART_SELECTORS.selectItems);
 
 	const [
 		addShippingAddress,
@@ -121,6 +123,7 @@ function Shipping() {
 		navigate("/checkout/payment");
 	};
 
+	
 	// Asignar el shippingAddress con estado true al cart y cada vez que cargamos la página asignar el id del shipping seleccionado en DB
 	useEffect(() => {
 		if (!shippingAddresses.length) return;
@@ -135,6 +138,11 @@ function Shipping() {
 		}
 		//eslint-disable-next-line
 	}, [shippingAddresses]);
+
+
+	if (!items.length) {
+		return <Navigate to="/cart" replace={true}></Navigate>;
+	}
 
 	return (
 		<>
