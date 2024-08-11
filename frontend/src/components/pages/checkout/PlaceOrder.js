@@ -15,6 +15,10 @@ import * as ERROR_ACTIONS from "redux/slices/errorSlice";
 //Services
 import {useSaveOrderMutation} from "apis/orderApi";
 
+const itemsStorage = JSON.parse(localStorage.getItem("cartItems") ?? "[]");
+const shippingAddressStorage = JSON.parse(localStorage.getItem("shippingAddress") ?? "{}");
+const paymentMethodStorage = JSON.parse(localStorage.getItem("paymentMethod") ?? '""');
+
 function PlaceOrder() {
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
@@ -31,6 +35,8 @@ function PlaceOrder() {
 	const taxPrice = useSelector(CART_SELECTORS.selectTaxPrice);
 	const totalPrice = useSelector(CART_SELECTORS.selectTotalPrice);
 
+	
+	
 	const handlePlaceOrder = async (e) => {
 		e.preventDefault();
 		try {
@@ -45,10 +51,6 @@ function PlaceOrder() {
 				totalPrice,
 			};
 			const createdOrder = await saveOrder({token, order}).unwrap();
-			console.log({
-				createdOrder,
-				orders: `/orders/${createdOrder?.body?.id}`
-			})
 			navigate(`/orders/${createdOrder?.body?.id}`);
 			dispatch(CART_ACTIONS.clearCart());
 		} catch (err) {
@@ -66,14 +68,13 @@ function PlaceOrder() {
 		//eslint-disable-next-line
 	}, []);
 
-	if (!items.length) {
+	if (!itemsStorage.length) {
 		return <Navigate to="/cart" replace={true}></Navigate>;
 	}
-
-	if (!Object.keys(shippingAddress).length) {
+	if (!Object.keys(shippingAddressStorage).length) {
 		return <Navigate to="shipping-address" replace={true} />;
 	}
-	if (!paymentMethod) {
+	if (!paymentMethodStorage) {
 		return <Navigate to="payment" replace={true} />;
 	}
 	return (

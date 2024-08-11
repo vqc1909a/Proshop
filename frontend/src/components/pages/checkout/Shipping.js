@@ -15,7 +15,6 @@ import * as CART_ACTIONS from "redux/slices/cartSlice";
 
 //Selectors
 import * as AUTH_SELECTORS from "redux/selectors/authSelector";
-import * as CART_SELECTORS from "redux/selectors/cartSelector";
 
 //Services
 import {
@@ -30,6 +29,9 @@ const SHIPPING_ADDRESS_DEFAULT = {
 	postalCode: "",
 	country: "",
 };
+
+const itemsStorage = JSON.parse(localStorage.getItem("cartItems") ?? "[]");
+
 function Shipping() {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
@@ -38,7 +40,6 @@ function Shipping() {
 	const {setNumberStep} = useOutletContext();
 
 	const shippingAddresses = useSelector(AUTH_SELECTORS.selectShippingAdresses);
-	const items = useSelector(CART_SELECTORS.selectItems);
 
 	const [
 		addShippingAddress,
@@ -139,8 +140,12 @@ function Shipping() {
 		//eslint-disable-next-line
 	}, [shippingAddresses]);
 
+	 useEffect(() => {
+		setNumberStep(1);
+		//eslint-disable-next-line
+	}, []);
 
-	if (!items.length) {
+	if (!itemsStorage.length) {
 		return <Navigate to="/cart" replace={true}></Navigate>;
 	}
 

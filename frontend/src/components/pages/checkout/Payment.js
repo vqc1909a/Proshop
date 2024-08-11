@@ -1,15 +1,14 @@
 import React, {useState, useEffect} from 'react';
 import { Button, Form, Col} from 'react-bootstrap'
 // import useForm from 'utils/hooks/useForm'
-import {useDispatch, useSelector} from "react-redux";
+import {useDispatch} from "react-redux";
 import { useNavigate, Navigate, useOutletContext} from 'react-router-dom';
 
 //Actions
 import * as CART_ACTIONS from "redux/slices/cartSlice";
 
-//Selectors
-import * as CART_SELECTORS from "redux/selectors/cartSelector";
-
+const itemsStorage = JSON.parse(localStorage.getItem("cartItems") ?? "[]");
+const shippingAddressStorage = JSON.parse(localStorage.getItem("shippingAddress") ?? "{}");
 
 function Payment() { 
   const dispatch = useDispatch();
@@ -18,8 +17,6 @@ function Payment() {
   const { setNumberStep  } = useOutletContext();
 
   //SELECTORS
-  const shippingAddress = useSelector(CART_SELECTORS.selectShippingAddress);
-	const items = useSelector(CART_SELECTORS.selectItems);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -34,12 +31,12 @@ function Payment() {
     //eslint-disable-next-line
   },[])
 
-  if (!items.length) {
+  if (!itemsStorage.length) {
 		return <Navigate to="/cart" replace={true}></Navigate>;
 	}
-  if(!Object.keys(shippingAddress).length){
-    return <Navigate to="shipping-address" replace={true} />
-  }
+  if (!Object.keys(shippingAddressStorage).length) {
+		return <Navigate to="shipping-address" replace={true} />;
+	}
   return (
     <>
         <h1>Payment Method</h1>
