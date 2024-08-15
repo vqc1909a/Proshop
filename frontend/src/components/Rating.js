@@ -1,10 +1,13 @@
 import React from "react";
 import {OverlayTrigger, Tooltip} from "react-bootstrap";
+import {FaStar, FaStarHalfAlt, FaRegStar} from "react-icons/fa";
 import PropTypes from "prop-types";
 
-export const Rating = ({rating, color = "#f8e825"}) => {
-	
-	return (
+export const Rating = ({rating, text}) => {
+	console.log({
+		text
+	})
+	return (	
 		<OverlayTrigger
 			key={"top"}
 			placement={"top"}
@@ -14,67 +17,53 @@ export const Rating = ({rating, color = "#f8e825"}) => {
 				</Tooltip>
 			}
 		>
-			<div>
+			<div className="rating">
 				<span>
-					<i
-						style={{color}}
-						className={
-							rating >= 1
-								? "fas fa-star"
-								: rating >= 0.5
-								? "fas fa-star-half-alt"
-								: "far fa-star"
-						}
-					></i>
+					{rating >= 1 ? (
+						<FaStar />
+					) : rating >= 0.5 ? (
+						<FaStarHalfAlt />
+					) : (
+						<FaRegStar />
+					)}
 				</span>
 				<span>
-					<i
-						style={{color}}
-						className={
-							rating >= 2
-								? "fas fa-star"
-								: rating >= 1.5
-								? "fas fa-star-half-alt"
-								: "far fa-star"
-						}
-					></i>
+					{rating >= 2 ? (
+						<FaStar />
+					) : rating >= 1.5 ? (
+						<FaStarHalfAlt />
+					) : (
+						<FaRegStar />
+					)}
 				</span>
 				<span>
-					<i
-						style={{color}}
-						className={
-							rating >= 3
-								? "fas fa-star"
-								: rating >= 2.5
-								? "fas fa-star-half-alt"
-								: "far fa-star"
-						}
-					></i>
+					{rating >= 3 ? (
+						<FaStar />
+					) : rating >= 2.5 ? (
+						<FaStarHalfAlt />
+					) : (
+						<FaRegStar />
+					)}
 				</span>
 				<span>
-					<i
-						style={{color}}
-						className={
-							rating >= 4
-								? "fas fa-star"
-								: rating >= 3.5
-								? "fas fa-star-half-alt"
-								: "far fa-star"
-						}
-					></i>
+					{rating >= 4 ? (
+						<FaStar />
+					) : rating >= 3.5 ? (
+						<FaStarHalfAlt />
+					) : (
+						<FaRegStar />
+					)}
 				</span>
 				<span>
-					<i
-						style={{color}}
-						className={
-							rating >= 5
-								? "fas fa-star"
-								: rating >= 4.5
-								? "fas fa-star-half-alt"
-								: "far fa-star"
-						}
-					></i>
+					{rating >= 5 ? (
+						<FaStar />
+					) : rating >= 4.5 ? (
+						<FaStarHalfAlt />
+					) : (
+						<FaRegStar />
+					)}
 				</span>
+				<span className="rating-text">{text && text}</span>
 			</div>
 		</OverlayTrigger>
 	);
@@ -82,5 +71,5 @@ export const Rating = ({rating, color = "#f8e825"}) => {
 
 Rating.propTypes = {
 	rating: PropTypes.number.isRequired,
-	color: PropTypes.string,
+	text: PropTypes.string,
 };

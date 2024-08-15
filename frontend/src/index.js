@@ -1,7 +1,7 @@
 import React, {Suspense} from "react";
 import ReactDOM from "react-dom/client";
-import "./bootstrap.min.css";
-import "./index.css";
+import "assets/styles/bootstrap.min.css";
+import "assets/styles/index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import {BrowserRouter} from "react-router-dom";

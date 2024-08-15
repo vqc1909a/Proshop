@@ -5,9 +5,6 @@ const ProtectedRoutePrivate = ({children, redirectPath = "/"})  => {
     const lastPath = pathname + search;
  
     const token = JSON.parse(localStorage.getItem("token") ?? '""');
-    console.log({
-        token
-    })
     //Outlet es el ejemplo de lo que tenemos en el mapeo de rutas
     if (token){
         return children ? children : <Outlet />; 

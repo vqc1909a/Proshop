@@ -12,6 +12,7 @@ import {useEffect} from "react";
 import {useNavigate} from "react-router-dom";
 import {LinkContainer} from "react-router-bootstrap";
 import SearchBox from "components/SearchBox";
+import logo from "assets/logo.png";
 
 //Selectors
 import * as AUTH_SELECTORS from "redux/selectors/authSelector";
@@ -41,7 +42,8 @@ function Header() {
 	const [getProfile, {isLoading /* error */}] = useGetProfileMutation();
 
 	const handleLogout = () => {
-		dispatch(AUTH_ACTIONS.logout());
+		dispatch(AUTH_ACTIONS.logout("Te acabas de desloguear"));
+		navigate("/");
 	};
 
 	useEffect(() => {
@@ -130,28 +132,29 @@ function Header() {
 
 			<Navbar bg="dark" variant="dark" expand="lg" collapseOnSelect>
 				<Container>
-					<Navbar.Brand
-						onClick={() => navigate("/")}
-						style={{cursor: "pointer"}}
-					>
-						ProShop
-					</Navbar.Brand>
+					<LinkContainer to="/">
+						<Navbar.Brand>
+							<img src={logo} alt="ProShop" />
+							ProShop
+						</Navbar.Brand>
+					</LinkContainer>
 					<Navbar.Toggle aria-controls="navbarScroll" />
 					<Navbar.Collapse id="navbarScroll">
 						<Nav
-							className="ms-auto my-2 my-lg-0"
-							style={{maxHeight: "100px"}}
+							className="ms-auto d-flex align-items-center"
 							navbarScroll
 						>
 							<SearchBox></SearchBox>
-							<Nav.Link onClick={() => navigate("/cart")}>
-								<i className="fas fa-shopping-cart"></i> Cart
-								{qtyItems > 0 && (
-									<Badge pill bg="success" style={{marginLeft: ".5rem"}}>
-										{qtyItems}
-									</Badge>
-								)}
-							</Nav.Link>
+							<LinkContainer to="/cart">
+								<Nav.Link>
+									<i className="fas fa-shopping-cart"></i> Cart
+									{qtyItems > 0 && (
+										<Badge pill bg="success" style={{marginLeft: ".5rem"}}>
+											{qtyItems}
+										</Badge>
+									)}
+								</Nav.Link>
+							</LinkContainer>
 							{isLogged ? (
 								<NavDropdown
 									title={isLoading ? "Cargando..." : `${userInfo.name}`}
@@ -183,9 +186,11 @@ function Header() {
 									)}
 								</NavDropdown>
 							) : (
-								<Nav.Link onClick={() => navigate("/auth/login")}>
-									<i className="fas fa-user"></i> Sign In
-								</Nav.Link>
+								<LinkContainer to="/auth/login">
+									<Nav.Link>
+										<i className="fas fa-user"></i> Sign In
+									</Nav.Link>
+								</LinkContainer>
 							)}
 						</Nav>
 					</Navbar.Collapse>

@@ -1,13 +1,12 @@
-import {Card} from "react-bootstrap";
-import Rating from "components/RatingProduct";
-import {useNavigate} from "react-router-dom";
+import {Card, OverlayTrigger, Tooltip} from "react-bootstrap";
+import RatingProduct from "components/RatingProduct";
+import {Link} from "react-router-dom";
 import PropTypes from "prop-types";
 
 //Helpers
 // import * as HELPERS from "utils/helpers"
 
 function Product({product}) {
-	let navigate = useNavigate();
 
 	const {id: productId, slug, image, name, priceIVA} = product;
 
@@ -15,37 +14,43 @@ function Product({product}) {
 
 	return (
 		<Card className="my-3 p-3 rounded">
-			<div
-				style={{cursor: "pointer"}}
-				onClick={() => navigate(`/products/${slug}`)}
-			>
+			<Link to={`/products/${slug}`}>
 				{/* <Card.Img src={image} variant="top" loading="lazy"></Card.Img> */}
-				{/* Mucho mejor loa opcion de base64 para varias imagenes que se muestran en una misma pantalla para optimizar la carga*/}
 				<Card.Img
 					src={image}
 					variant="top"
 					loading="lazy"
 					height={180}
 				></Card.Img>
-			</div>
+			</Link>
 
 			<Card.Body>
-				<div
-					style={{
-						cursor: "pointer",
-						textDecoration: "underline",
-						height: "50px",
-					}}
-					onClick={() => navigate(`/products/${slug}`)}
+				<Link
+					style={
+						{
+							// display: "inline-block",
+							// height: "50px",
+						}
+					}
+					to={`/products/${slug}`}
 				>
-					<Card.Title as="div">
-						<strong>{name}</strong>
-					</Card.Title>
-				</div>
-				<Card.Text as="div">
-					<Rating productId={productId}></Rating>
+					<OverlayTrigger
+						key={"top"}
+						placement={"top"}
+						overlay={
+							<Tooltip id={`tooltip-top`}>
+								<strong>{name}</strong>
+							</Tooltip>
+						}
+					>
+						<Card.Title as="div" className="product-title">
+							<strong>{name}</strong>
+						</Card.Title>
+					</OverlayTrigger>
+				</Link>
+				<Card.Text as="div" className="my-1">
+					<RatingProduct productId={productId}></RatingProduct>
 				</Card.Text>
-
 				<Card.Text as="h3">${priceIVA}</Card.Text>
 			</Card.Body>
 		</Card>

@@ -12,7 +12,6 @@ function RatingProduct({productId}) {
 		isLoading: isLoadingReviews,
 		error: errorReviews,
 	} = useGetReviewsByProductQuery({productId: productId});
-
 	const rating = dataReviews?.body?.rating || 0;
 	const countReviews = dataReviews?.body?.countReviews || 0;
 
@@ -26,8 +25,7 @@ function RatingProduct({productId}) {
 				</Message>
 			) : (
 				<>
-					<Rating rating={rating} />
-					<div>{`${countReviews} reviews`}</div>
+					<Rating rating={rating} text={`${countReviews} reviews`} />
 				</>
 			)}
 		</div>
