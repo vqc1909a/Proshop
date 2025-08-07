@@ -80,8 +80,6 @@ export const updateUser = asyncHandler( async(req, res) => {
     const userId = req.params.id;
     const body = req.body;
 
-    body.password = bcrypt.hashSync(body.password, 10);
-
     const searchedUser = await User.findOne({_id: {$ne: userId}, email: body.email});
     if(searchedUser){
         res.status(400);
@@ -93,7 +91,6 @@ export const updateUser = asyncHandler( async(req, res) => {
         res.status(404);
         throw new Error("El usuario no existe");
     }
-
 
     const updatedUser = await User.findOneAndUpdate({_id: userId}, body, {runValidators: true, new: true})
     return res.status(200).json({body: updatedUser, message: "Usuario Actualizado Correctamente"});

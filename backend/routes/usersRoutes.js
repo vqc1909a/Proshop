@@ -28,23 +28,6 @@ const Router = express();
 // Se encargan de la gestión de contenido relacionado con sus productos.
 // Administradores de Ventas/Clientes:
 
-// Gestionan pedidos, clientes y ventas.
-// Pueden atender consultas y problemas de clientes.
-// Supervisan el proceso de envío y entrega de productos.
-// Administradores de Marketing/Promociones:
-
-// Controlan las campañas de marketing, promociones y publicidad.
-// Pueden realizar cambios en la página de inicio, banners promocionales y contenido relacionado con promociones.
-// Administradores de Seguridad y TI:
-
-// Se encargan de la seguridad del sitio, incluyendo la detección y respuesta a amenazas.
-// Gestionan las actualizaciones de software y la infraestructura técnica.
-// Soporte Técnico:
-
-// Proporciona asistencia técnica a los usuarios y soluciona problemas técnicos.
-// Puede realizar acciones de resolución de problemas en cuentas de usuarios cuando sea necesario.
-// Esta estructura permite que diferentes equipos se enfoquen en áreas específicas del negocio y reduce el riesgo de errores accidentales. También facilita la colaboración y la eficiencia, ya que cada administrador tiene un conjunto de responsabilidades claras.
-
 Router.route("/admin").get(MIDDLEWARES.verifyAuthentication, MIDDLEWARES.adminMiddleware, USERS_CONTROLLER.getUsers);
 Router.route("/admin").post(MIDDLEWARES.verifyAuthentication, MIDDLEWARES.adminMiddleware, USERS_CONTROLLER.createUser);
 Router.route("/admin/:id").get(MIDDLEWARES.verifyAuthentication, MIDDLEWARES.adminMiddleware, USERS_CONTROLLER.getUserById);

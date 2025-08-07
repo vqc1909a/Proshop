@@ -1,6 +1,5 @@
 import * as url from 'url';
 import express from "express";
-import cors from "cors";
 import dotenv from "dotenv";
 import connectDB from "./config/db.js";
 import cookieParser from "cookie-parser";
@@ -23,7 +22,6 @@ const app = express();
 const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 const PORT = process.env.PORT || 5000;
 
-app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(__dirname + '/public'));
@@ -40,6 +38,12 @@ app.use("/api/orders", ordersRoutes);
 app.use("/api/users", usersRoutes); 
 
 //Ahoras si es que sabes bien que el build al igual que el developmentb de una aplicación de react es simplemente un html donde necesita javascript para ejecutar todo lo que hicimos en el front, o sea pintar las rutas en el navegador, responder el contenido según la ruta, etc y para deployarlo simplemente necesitamos de un servidor corriendo para mandar a llmar a ese html, lo hacemos desde este servidor del backend xq el proxy ya no me funcionara cuando hacemos le build de mi app de react porque es un simple html con el javascript ya compilado de todo lo que hicimos pero no me funcionara el proxy porque solamente me funcionara en modo desarrollo gracias al package.json
+
+
+// This route serves the main HTML file to the browser.
+// When a user visits your site (e.g., / or any frontend route), the server responds with index.html, which loads your React app in the browser.
+
+// The "proxy" setting only works in development. In production, you need to serve the built frontend files yourself.
 
 if(process.env.NODE_ENV === 'production'){
     //Para cualquier ruta desconocida tenemos que servir el index.html del build del frontend, esto xq vamos a tener rutas fictias del front y para que nos funcione como en el development cuando recargamos dichas paginas con las rutas fictias, entonces aqui debemos de poner cualquier ruta que no se encuentra definido en nuestro back, xq nuestro back todas sus retuas empiezan con /api, etonces funcionara normalin con las rutas del front, solamente que no deben coincidir las rutas del front con el del back
