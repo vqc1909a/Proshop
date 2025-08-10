@@ -371,11 +371,6 @@ function OrderScreen() {
 					currency: "USD",
 				},
 			});
-			//Cambiamos el estado de isPending a pending
-			// dispatch({
-			//     type: "setLoadingStatus",
-			//     value: "pending"
-			// })
 		};
 		//Vamos a cargar el SDK de paypal siempre y cuando el order no este pagado y la ventana window tampoco lo tenga cargado previamente
 		if (!order.isPaid /* && !window.paypal */) {

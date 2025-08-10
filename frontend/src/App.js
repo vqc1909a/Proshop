@@ -44,7 +44,7 @@ const OrderAdminScreen = lazy(() =>
 );
 const ProductAdminScreen = lazy(() =>
 	import(
-		/* webpackChunkName: "OrderAdminScreen" */ "screens/admin/ProductAdminScreen"
+		/* webpackChunkName: "ProductAdminScreen" */ "screens/admin/ProductAdminScreen"
 	)
 );
 

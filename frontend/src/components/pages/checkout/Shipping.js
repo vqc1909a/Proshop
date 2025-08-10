@@ -125,7 +125,7 @@ function Shipping() {
 	};
 
 	
-	// Asignar el shippingAddress con estado true al cart y cada vez que cargamos la página asignar el id del shipping seleccionado en DB
+	// Asignar el shippingAddress con estado true al cart
 	useEffect(() => {
 		if (!shippingAddresses.length) return;
 

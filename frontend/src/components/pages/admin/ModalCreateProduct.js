@@ -72,9 +72,13 @@ function ModalCreateProduct(props) {
 				{isSuccess && <Message variant="success">{data?.message}</Message>}
 				<Formik
 					validationSchema={schema}
+					// it’s sent as multipart/form-data (Content-Type: multipart/form-data), which is required for file uploads.
 					onSubmit={async (values, {resetForm}) => {
 						const token = JSON.parse(localStorage.getItem("token") ?? '""');
 						try {
+							console.log({
+								product: formCreateProduct.current,
+							});
 							let formData = new FormData(formCreateProduct.current);
 							await createProduct({token, newProduct: formData}).unwrap();
 							imagePreview.current.innerHTML = "";
@@ -99,6 +103,7 @@ function ModalCreateProduct(props) {
 					}}
 				>
 						{/* When noValidate is present, the browser's default validation for form inputs (like checking for required fields, correct email format in type="email" inputs, etc.) is bypassed, allowing the form to be submitted without undergoing these checks.  */}
+						{/* If you submit the form directly via HTML (without JavaScript), then you should set enctype="multipart/form-data" */}
 					{({handleSubmit, handleChange, values, touched, errors}) => (
 						<Form noValidate onSubmit={handleSubmit} ref={formCreateProduct}>
 							<Row className="mb-3">

@@ -7,7 +7,6 @@ import apiSlice from ".";
 
 // Utiliza builder.mutation cuando necesites realizar operaciones de escritura o mutación en la API, como agregar, actualizar o eliminar datos utilizando peticiones POST, PUT, PATCH o DELETE. Por ejemplo, agregar un nuevo producto, actualizar la información de un usuario, eliminar un registro, etc.
 
-//El tema de los invalidatesTags, el servicio va a cancelar los servicios que se encuentran en dichos tags si o si o se lo eliminara de cache y si ese sservicio que invalido los tags se encuentran en la misma ruta o pagina como por ejemplo /admin, osea donde estan otros servicios que se encuentran vinculados a dichos tags que cancelo el servicio, entonces estos servicios se volveran a hacer un request ahi mismo pero para los otros servicios que se encuentran en otras paginas, lo cancelara su cache y cuando vayamos a dichas paginas me volvera hacer el request
 const productsApiSlice = apiSlice.injectEndpoints({
 	endpoints: (builder) => ({
 		getProducts: builder.query({
@@ -22,8 +21,6 @@ const productsApiSlice = apiSlice.injectEndpoints({
 			// En RTK Query, si no especificas el valor de keepUnusedDataFor en una consulta, el valor por defecto es 60 segundos. Esto significa que los datos en caché que no han sido utilizados durante al menos 60 segundos serán automáticamente eliminados de la caché.
 			keepUnusedDataFor: 60,
 			//providesTags:
-			// Purpose: It is used to label data returned by a query or mutation with one or more tags. These tags are then used to track and select which cached data may be affected by other operations.
-
 			// Usage: You use providesTags in a query or mutation to define which tags are provided (or produced) by that endpoint. When the data is fetched and cached, these tags are associated with the cached data.
 
 			// Effect: If a mutation invalidates a tag that matches a tag provided by a query, the cached data for that query will be considered stale and refetched on the next component re-render that uses that query.
@@ -186,8 +183,6 @@ const productsApiSlice = apiSlice.injectEndpoints({
 // Stale Data Marking: The cached data associated with the invalidated tag is marked as stale. This means that the next time a component or hook tries to access data associated with this tag, it will be forced to fetch fresh data instead of relying on the potentially outdated cached data.
 
 // Consistency Maintenance: This mechanism helps in maintaining consistency across your application. For example, if you have a mutation that updates a product and another query that fetches product details, invalidating the product tag in the update mutation ensures that the query fetching product details will get the latest data.
-
-// No Direct Impact on Other Mutations: If another mutation provides the same tag, invalidating the tag does not directly affect the execution or behavior of that mutation. Instead, it affects how the data provided by that mutation is cached and when it is considered stale.
 
 // In summary, invalidating a tag through a mutation ensures that any data associated with that tag across your application is kept up to date by marking cached data as stale and triggering refetching where necessary. This is crucial for maintaining data consistency and ensuring that your application reacts correctly to changes in data.
 

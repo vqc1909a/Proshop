@@ -52,7 +52,7 @@ function Header() {
 		const token = JSON.parse(localStorage.getItem("token"));
 		const getLoggedUser = async (token) => {
 			try {
-				//Con el unwrap(), obtengo defrente la respuesta  sin la necesidad de respuesta del hook y si hay algun error el error sera el catch "err" y es lo mismo de arriba
+				//Con el unwrap(), obtengo defrente la respuesta  sin la necesidad del formato de respuesta del hook y si hay algun error el error sera el catch "err" y es lo mismo de arriba
 				const userInfo = await getProfile(token).unwrap();
 				//Establecemos si el usuario es admin o no, xq con el useEffect no lo vamos a poder obtener a tiempo el valor de userInfo en los hocs
 				localStorage.setItem("isAdmin", userInfo.body.isAdmin);

@@ -61,7 +61,7 @@ const cartSlice = createSlice({
             const shippingAddress = action.payload;
             //Aqui evalua el shippingAddress del carrito y esto siempre va a llamar siempre que haya una dirección seleccionada, o sea que si o si existe el shippingAddress
             if(!state.shippingAddress){
-                state.totalPrice = state.totalPrice + (state.shippingAddress?.regionId?.shippingPrice || 0);
+                state.totalPrice = state.totalPrice + (shippingAddress?.regionId?.shippingPrice || 0);
             }else{
                 if(state.shippingAddress.id !== shippingAddress.id){
                     state.totalPrice = state.totalPrice - (state.shippingAddress?.regionId?.shippingPrice || 0) + (shippingAddress?.regionId?.shippingPrice || 0)

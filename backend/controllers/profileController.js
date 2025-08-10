@@ -122,7 +122,6 @@ export const addShippingAddress = asyncHandler(async (req, res) => {
 // @route POST /api/profile/change-selected-shipping-address
 // @access Private
 export const changeSelectedShippingAddress = asyncHandler(async (req, res) => {
-	//No es necesario hacer un populate "shippingAddresses.regionId" aqui xq esto necesita al menos una dirección añadida, y esa dirección añadida ya hace el populate
 	const user = req.user;
 	const idSelectedShippingAddress = req.body.idSelectedShippingAddress;
 
