@@ -35,11 +35,8 @@ function ChangePasswordScreen() {
 		handleChange,
 	} = useForm(PASSWORD_DEFAULT);
 
-	const submitUpdatePassword = async ({
-		event,
-		passwords,
-	}) => {
-		event.preventDefault();
+	const submitUpdatePassword = async (e) => {
+		e.preventDefault();
 		try {
 			const token = JSON.parse(localStorage.getItem("token"));
 			//unwrap es para obtener la respuesta directamente o en caso de error err tome el valor de error
@@ -70,14 +67,7 @@ function ChangePasswordScreen() {
 					</Message>
 				)}
 				{isSuccess && <Message variant="success">{data?.message}</Message>}
-				<Form
-					onSubmit={(event) =>
-						submitUpdatePassword({
-							event,
-							passwords,
-						})
-					}
-				>
+				<Form onSubmit={submitUpdatePassword}>
 					<Form.Group controlId="current_password" className="mb-3">
 						<Form.Label>Current Password</Form.Label>
 						<Form.Control

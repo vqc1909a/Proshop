@@ -28,7 +28,7 @@ function PersonalInformation() {
 
 	const {name, email, form: profile, setForm, handleChange} = useForm(userInfo);
 
-	const handleSubmitUpdateProfile = async (e, profile, error) => {
+	const handleSubmitUpdateProfile = async (e) => {
 		e.preventDefault();
 		try {
 			const token = JSON.parse(localStorage.getItem("token"));
@@ -65,7 +65,7 @@ function PersonalInformation() {
 			{isSuccess && <Message variant="success">{data?.message}</Message>}
 
 			<Form
-				onSubmit={(e) => handleSubmitUpdateProfile(e, profile, error)}
+				onSubmit={handleSubmitUpdateProfile}
 				className="mb-5"
 			>
 				<Form.Group controlId="name" className="mb-3">
